@@ -1,0 +1,5 @@
+# Disable OpenThread to avoid git submodule requirement during build
+CONFIG_OPENTHREAD_ENABLED=n
+CONFIG_IEEE802154_ENABLED=n
+CONFIG_ESP_COEX_ENABLED=n
+CONFIG_ESP_COEX_ENABLED=n

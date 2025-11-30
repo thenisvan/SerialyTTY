@@ -1,0 +1,20 @@
+# PlatformIO build artifacts
+.pio/
+.pioenvs/
+.piolibdeps/
+
+# ESP-IDF build cache (if used directly)
+build/
+
+# VS Code settings and caches
+.vscode/
+
+# macOS
+.DS_Store
+
+# Python virtual envs
+venv/
+.venv/
+
+# Logs
+*.log
