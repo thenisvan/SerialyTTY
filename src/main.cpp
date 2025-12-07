@@ -15,6 +15,7 @@
 #include "bluetooth_manager.h"
 #include "hardware_detector.h"
 #include "bridge_mode.h"
+#include "menu_system.h"
 
 static const char *TAG = "MAIN";
 
@@ -26,6 +27,7 @@ BaudDetector baudDetector;
 CommTester commTester;
 BluetoothManager bluetooth;
 BridgeMode bridge;
+MenuSystem menu;
 
 // System state
 SystemState currentState = STATE_BOOTING;
@@ -103,12 +105,17 @@ void setup_hardware() {
     
     vTaskDelay(pdMS_TO_TICKS(1000));
     
-    // Transition to waiting state
-    currentState = STATE_WAITING;
+    // Configure menu system with hardware info
+    menu.setHardwareDetected(hwConfig.displayPresent, 
+                            hwConfig.sdCardPresent, 
+                            hwConfig.accelerometerPresent);
+    
+    // Transition to menu state
+    currentState = STATE_MENU;
     stateChangeTime = millis();
-    display.setState(STATE_WAITING);
+    display.setState(STATE_MENU);
     display.update();
-    logger.logStateChange(STATE_WAITING);
+    logger.logStateChange(STATE_MENU);
 }
 
 void main_loop() {
@@ -337,30 +344,97 @@ void handleBridgeModeState() {
     
     // Check if bridge mode was exited (escape sequence detected)
     if (!bridge.isActive()) {
-        ESP_LOGI(TAG, "Bridge mode exited, entering menu");
+        ESP_LOGI(TAG, "Bridge mode exited, returning to menu");
+        // Update stats before showing menu
+        menu.setBytesRx(bridge.getBytesRx());
+        menu.setBytesTx(bridge.getBytesTx());
         changeState(STATE_MENU);
     }
 }
 
 void handleMenuState() {
-    // TODO: Implement full menu system
-    // For now, just return to waiting state
-    display.setStatus("Menu - Press R to restart");
-    display.update();
+    static bool menuShown = false;
+    
+    // Show menu on first entry
+    if (!menuShown) {
+        // Update menu with current stats
+        menu.setBaudRate(detectedBaud);
+        menu.setBytesRx(bridge.getBytesRx());
+        menu.setBytesTx(bridge.getBytesTx());
+        menu.show();
+        menuShown = true;
+    }
     
     // Check for user input
     uint8_t data[16];
     int len = uart_read_bytes(UART_NUM_0, data, sizeof(data), pdMS_TO_TICKS(100));
     
     if (len > 0) {
-        // Check for 'R' or 'r' to restart detection
         for (int i = 0; i < len; i++) {
-            if (data[i] == 'R' || data[i] == 'r') {
-                ESP_LOGI(TAG, "Restarting detection...");
-                const char* msg = "\r\nRestarting detection...\r\n\r\n";
-                uart_write_bytes(UART_NUM_0, msg, strlen(msg));
-                changeState(STATE_WAITING);
-                return;
+            char c = (char)data[i];
+            
+            // Echo the character
+            uart_write_bytes(UART_NUM_0, &c, 1);
+            
+            // Handle the input
+            menu.handleInput(c);
+            
+            // Check for commands that change state
+            char cmd = menu.getLastCommand();
+            if (cmd != 0) {
+                switch (cmd) {
+                    case 'D':  // Detect baud rate
+                        ESP_LOGI(TAG, "Starting baud detection...");
+                        uart_write_bytes(UART_NUM_0, "\r\n\r\n", 4);
+                        menuShown = false;
+                        changeState(STATE_ANALYZING);
+                        break;
+                        
+                    case 'B':  // Enter bridge mode
+                        if (detectedBaud > 0) {
+                            ESP_LOGI(TAG, "Entering bridge mode...");
+                            uart_write_bytes(UART_NUM_0, "\r\n\r\n", 4);
+                            menuShown = false;
+                            changeState(STATE_BRIDGE_MODE);
+                        } else {
+                            const char* msg = "\r\n[ERROR] No baud rate detected. Run detection first.\r\n";
+                            uart_write_bytes(UART_NUM_0, msg, strlen(msg));
+                            menuShown = false;  // Redraw menu
+                        }
+                        break;
+                        
+                    case 'R':  // Reset detection
+                        ESP_LOGI(TAG, "Resetting...");
+                        uart_write_bytes(UART_NUM_0, "\r\n\r\n", 4);
+                        detectedBaud = 0;
+                        bridge.resetStats();
+                        menuShown = false;
+                        changeState(STATE_WAITING);
+                        break;
+                        
+                    case '1':  // Manual baud rates
+                    case '2':
+                    case '3':
+                    case '4':
+                    case '5':
+                        {
+                            uint32_t baudRates[] = {9600, 19200, 38400, 57600, 115200};
+                            int idx = cmd - '1';
+                            if (idx >= 0 && idx < 5) {
+                                detectedBaud = baudRates[idx];
+                                char msg[64];
+                                snprintf(msg, sizeof(msg), "\r\nBaud rate set to %lu\r\n", 
+                                        (unsigned long)detectedBaud);
+                                uart_write_bytes(UART_NUM_0, msg, strlen(msg));
+                                ESP_LOGI(TAG, "Manual baud rate: %lu", (unsigned long)detectedBaud);
+                                vTaskDelay(pdMS_TO_TICKS(1000));
+                                menuShown = false;
+                            }
+                        }
+                        break;
+                }
+                
+                menu.clearCommand();
             }
         }
     }
