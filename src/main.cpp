@@ -58,15 +58,11 @@ static uint32_t millis() {
 void setup_hardware() {
     ESP_LOGI(TAG, "\n\n=== USB-TTL SNIFFER STARTING ===");
     
-    // Configure VFS for stdin/stdout to enable interactive console
-    esp_vfs_dev_uart_port_set_rx_line_endings(CONFIG_ESP_CONSOLE_UART_NUM, ESP_LINE_ENDINGS_CR);
-    esp_vfs_dev_uart_port_set_tx_line_endings(CONFIG_ESP_CONSOLE_UART_NUM, ESP_LINE_ENDINGS_CRLF);
+    // Install UART driver for console input (UART_NUM_0)
+    // This allows us to read user input via uart_read_bytes()
+    uart_driver_install(UART_NUM_0, 256, 0, 0, NULL, 0);
     
-    // Make stdin/stdout non-blocking for getchar()
-    setvbuf(stdin, NULL, _IONBF, 0);
-    setvbuf(stdout, NULL, _IONBF, 0);
-    
-    ESP_LOGI(TAG, "Console configured for interactive input");
+    ESP_LOGI(TAG, "Console UART driver installed");
     
     // Detect hardware modules
     ESP_LOGI(TAG, "Scanning for hardware modules...");
@@ -399,16 +395,19 @@ void handleMenuState() {
         menuShown = true;
     }
     
-    // Check for user input (getchar is non-blocking)
-    int c = fgetc(stdin);
+    // Check for user input by polling UART directly
+    uint8_t data[1];
+    int len = uart_read_bytes(UART_NUM_0, data, 1, 0);  // Non-blocking read
     
-    if (c != EOF && c != 0xFF) {
+    if (len > 0) {
+        char c = (char)data[0];
+        
         // Echo the character
-        fputc(c, stdout);
+        printf("%c", c);
         fflush(stdout);
         
         // Handle the input
-        menu.handleInput((char)c);
+        menu.handleInput(c);
         
         // Check for commands that change state
         char cmd = menu.getLastCommand();
