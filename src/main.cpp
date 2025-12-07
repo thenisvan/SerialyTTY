@@ -14,6 +14,7 @@
 #include "comm_tester.h"
 #include "bluetooth_manager.h"
 #include "hardware_detector.h"
+#include "bridge_mode.h"
 
 static const char *TAG = "MAIN";
 
@@ -24,6 +25,7 @@ SDLogger logger;
 BaudDetector baudDetector;
 CommTester commTester;
 BluetoothManager bluetooth;
+BridgeMode bridge;
 
 // System state
 SystemState currentState = STATE_BOOTING;
@@ -41,6 +43,8 @@ void handleFoundSpeedState();
 void handleRestartNeededState();
 void handleTestingState();
 void handleRunningState();
+void handleBridgeModeState();
+void handleMenuState();
 void logDataToSD(const char* data);
 
 static uint32_t millis() {
@@ -141,6 +145,14 @@ void main_loop() {
             handleRunningState();
             break;
             
+        case STATE_BRIDGE_MODE:
+            handleBridgeModeState();
+            break;
+            
+        case STATE_MENU:
+            handleMenuState();
+            break;
+            
         case STATE_BOOTING:
             // Already handled in setup
             break;
@@ -190,10 +202,11 @@ void handleFoundSpeedState() {
     snprintf(buf, sizeof(buf), "Baud rate confirmed: %lu bps", (unsigned long)detectedBaud);
     logger.log(buf);
     
-    // Wait a bit before testing
-    vTaskDelay(pdMS_TO_TICKS(2000));
+    // Wait a bit before entering bridge mode
+    vTaskDelay(pdMS_TO_TICKS(1000));
     
-    changeState(STATE_TESTING);
+    ESP_LOGI(TAG, "Entering bridge mode at %lu baud", (unsigned long)detectedBaud);
+    changeState(STATE_BRIDGE_MODE);
 }
 
 void handleRestartNeededState() {
@@ -309,6 +322,48 @@ void handleRunningState() {
     }
     
     display.update();
+}
+
+void handleBridgeModeState() {
+    // Enter bridge mode on first call
+    if (!bridge.isActive()) {
+        bridge.enter(detectedBaud);
+        display.setStatus("Bridge Mode Active");
+        display.update();
+    }
+    
+    // Handle transparent data passthrough
+    bridge.handleData();
+    
+    // Check if bridge mode was exited (escape sequence detected)
+    if (!bridge.isActive()) {
+        ESP_LOGI(TAG, "Bridge mode exited, entering menu");
+        changeState(STATE_MENU);
+    }
+}
+
+void handleMenuState() {
+    // TODO: Implement full menu system
+    // For now, just return to waiting state
+    display.setStatus("Menu - Press R to restart");
+    display.update();
+    
+    // Check for user input
+    uint8_t data[16];
+    int len = uart_read_bytes(UART_NUM_0, data, sizeof(data), pdMS_TO_TICKS(100));
+    
+    if (len > 0) {
+        // Check for 'R' or 'r' to restart detection
+        for (int i = 0; i < len; i++) {
+            if (data[i] == 'R' || data[i] == 'r') {
+                ESP_LOGI(TAG, "Restarting detection...");
+                const char* msg = "\r\nRestarting detection...\r\n\r\n";
+                uart_write_bytes(UART_NUM_0, msg, strlen(msg));
+                changeState(STATE_WAITING);
+                return;
+            }
+        }
+    }
 }
 
 void changeState(SystemState newState) {
