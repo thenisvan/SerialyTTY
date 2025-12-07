@@ -5,6 +5,8 @@
 #include "esp_log.h"
 #include "esp_system.h"
 #include "esp_timer.h"
+#include "esp_vfs_dev.h"
+#include "driver/uart.h"
 #include "driver/gpio.h"
 #include "driver/uart.h"
 #include "config.h"
@@ -56,8 +58,15 @@ static uint32_t millis() {
 void setup_hardware() {
     ESP_LOGI(TAG, "\n\n=== USB-TTL SNIFFER STARTING ===");
     
-    // Note: UART_NUM_0 is already initialized by ESP-IDF as console
-    // We'll use printf() for menu output instead of direct UART writes
+    // Configure VFS for stdin/stdout to enable interactive console
+    esp_vfs_dev_uart_port_set_rx_line_endings(CONFIG_ESP_CONSOLE_UART_NUM, ESP_LINE_ENDINGS_CR);
+    esp_vfs_dev_uart_port_set_tx_line_endings(CONFIG_ESP_CONSOLE_UART_NUM, ESP_LINE_ENDINGS_CRLF);
+    
+    // Make stdin/stdout non-blocking for getchar()
+    setvbuf(stdin, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IONBF, 0);
+    
+    ESP_LOGI(TAG, "Console configured for interactive input");
     
     // Detect hardware modules
     ESP_LOGI(TAG, "Scanning for hardware modules...");
@@ -390,12 +399,13 @@ void handleMenuState() {
         menuShown = true;
     }
     
-    // Check for user input
-    int c = getchar();
+    // Check for user input (getchar is non-blocking)
+    int c = fgetc(stdin);
     
-    if (c != EOF) {
+    if (c != EOF && c != 0xFF) {
         // Echo the character
-        printf("%c", (char)c);
+        fputc(c, stdout);
+        fflush(stdout);
         
         // Handle the input
         menu.handleInput((char)c);
