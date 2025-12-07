@@ -26,11 +26,12 @@ bool DisplayManager::begin() {
     tft = new TFTDriver();
     if (tft == nullptr) {
         ESP_LOGE(TAG, "Failed to allocate TFT driver");
+        present = false;
         return false;
     }
     
     if (!tft->begin()) {
-        ESP_LOGW(TAG, "TFT display not detected or failed to initialize");
+        ESP_LOGI(TAG, "TFT display not detected - running without display");
         delete tft;
         tft = nullptr;
         present = false;

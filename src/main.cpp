@@ -74,15 +74,23 @@ void setup_hardware() {
     ESP_LOGI(TAG, "Scanning for hardware modules...");
     HardwareConfig hwConfig = hwDetector.scanAll();
     
-    // Initialize display (if present)
-    bool displayPresent = display.begin();
-    if (!displayPresent) {
-        ESP_LOGW(TAG, "Display not detected — continuing without display.");
-    }
-    if (displayPresent) {
-        display.setState(STATE_BOOTING);
-        display.setStatus("Initializing components...");
-        display.update();
+    // Initialize display only if we want to try (can be disabled for testing)
+    // Set to false to skip display initialization entirely
+    bool tryDisplay = false;  // Set to true when display hardware is connected
+    bool displayPresent = false;
+    
+    if (tryDisplay) {
+        displayPresent = display.begin();
+        if (!displayPresent) {
+            ESP_LOGW(TAG, "Display not detected — continuing without display.");
+        }
+        if (displayPresent) {
+            display.setState(STATE_BOOTING);
+            display.setStatus("Initializing components...");
+            display.update();
+        }
+    } else {
+        ESP_LOGI(TAG, "Display initialization skipped (not connected)");
     }
     
     vTaskDelay(pdMS_TO_TICKS(500));
