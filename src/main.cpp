@@ -132,12 +132,8 @@ void setup_hardware() {
     display.update();
     logger.logStateChange(STATE_MENU);
     
-    // Show the menu immediately
-    vTaskDelay(pdMS_TO_TICKS(500));
-    menu.setBaudRate(detectedBaud);
-    menu.setBytesRx(bridge.getBytesRx());
-    menu.setBytesTx(bridge.getBytesTx());
-    menu.show();
+    // Note: Menu will be shown by handleMenuState() on first loop iteration
+    // No need to show it here to avoid double display
 }
 
 void main_loop() {
