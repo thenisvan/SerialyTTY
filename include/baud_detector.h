@@ -39,6 +39,11 @@ public:
 
     // Get detected baud rate
     uint32_t getDetectedBaud() { return detectedBaud; }
+    
+    // Intelligent baud detection using bit timing analysis
+    uint32_t detectBaudRateByTiming();
+    bool startBitTimingCapture();
+    void stopBitTimingCapture();
 
 private:
     // Hardware-specific serial pointer (may be null for ESP-IDF implementations)
@@ -46,12 +51,21 @@ private:
     uint8_t rxPin = 0;
     uint8_t txPin = 0;
     uint32_t detectedBaud = 0;
+    
+    // Bit timing capture variables
+    volatile uint64_t edgeTimestamps[32];
+    volatile uint8_t edgeCount;
+    volatile bool capturingTiming;
 
     // Analyze bit timing patterns
     float analyzeBitPattern();
+    uint32_t calculateBaudFromEdges();
 
     // Try common baud rates
     uint32_t tryCommonBaudRates();
+    
+    // ISR handler
+    static void IRAM_ATTR gpioIsrHandler(void* arg);
 };
 
 #endif // BAUD_DETECTOR_H

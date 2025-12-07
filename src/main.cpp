@@ -161,11 +161,12 @@ void handleWaitingState() {
 }
 
 void handleAnalyzingState() {
-    display.setStatus("Testing baud rates...");
+    display.setStatus("Analyzing bit timing...");
     display.update();
     
-    // Try to detect baud rate
-    detectedBaud = baudDetector.detectBaudRate(DETECTION_TIMEOUT);
+    // Try intelligent baud detection first
+    ESP_LOGI(TAG, "Attempting intelligent baud detection...");
+    detectedBaud = baudDetector.detectBaudRateByTiming();
     
     if (detectedBaud > 0) {
         logger.logBaudDetection(detectedBaud);
