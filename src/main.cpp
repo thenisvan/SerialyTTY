@@ -142,6 +142,13 @@ void setup_hardware() {
     display.setState(STATE_MENU);
     display.update();
     logger.logStateChange(STATE_MENU);
+    
+    // Show the menu immediately
+    vTaskDelay(pdMS_TO_TICKS(500));
+    menu.setBaudRate(detectedBaud);
+    menu.setBytesRx(bridge.getBytesRx());
+    menu.setBytesTx(bridge.getBytesTx());
+    menu.show();
 }
 
 void main_loop() {
@@ -380,6 +387,13 @@ void handleBridgeModeState() {
 
 void handleMenuState() {
     static bool menuShown = false;
+    static SystemState lastState = STATE_BOOTING;
+    
+    // Reset menu flag if we just entered this state from another state
+    if (lastState != STATE_MENU) {
+        menuShown = false;
+        lastState = STATE_MENU;
+    }
     
     // Show menu on first entry
     if (!menuShown) {
