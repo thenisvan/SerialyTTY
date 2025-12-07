@@ -4,6 +4,7 @@
 #include "freertos/task.h"
 #include "esp_log.h"
 #include "esp_system.h"
+#include "esp_timer.h"
 #include "driver/gpio.h"
 #include "driver/uart.h"
 #include "config.h"
@@ -11,6 +12,7 @@
 #include "baud_detector.h"
 #include "sd_logger.h"
 #include "comm_tester.h"
+#include "bluetooth_manager.h"
 
 static const char *TAG = "MAIN";
 
@@ -19,6 +21,7 @@ DisplayManager display;
 SDLogger logger;
 BaudDetector baudDetector;
 CommTester commTester;
+BluetoothManager bluetooth;
 
 // System state
 SystemState currentState = STATE_BOOTING;
@@ -75,6 +78,15 @@ void setup_hardware() {
     // Initialize baud detector
     baudDetector.begin();
     if (displayPresent) {
+        display.setStatus("Initializing Bluetooth...");
+        display.update();
+    }
+    
+    vTaskDelay(pdMS_TO_TICKS(500));
+    
+    // Initialize Bluetooth
+    bluetooth.begin("SmvIT USB-TTL Bridge");
+    if (displayPresent) {
         display.setStatus("Ready");
         display.update();
     }
@@ -127,6 +139,9 @@ void main_loop() {
             // Already handled in setup
             break;
     }
+    
+    // Handle Bluetooth data bridging
+    bluetooth.handleLoop();
     
     vTaskDelay(pdMS_TO_TICKS(10)); // Small delay for FreeRTOS
 }
@@ -229,6 +244,7 @@ void handleRunningState() {
         int len = uart_read_bytes(UART_NUM_1, data, sizeof(data), pdMS_TO_TICKS(10));
         
         if (len > 0) {
+            // Log and display the data
             char rxData[256];
             snprintf(rxData, sizeof(rxData), "RX: ");
             for (int i = 0; i < len && i < 32; i++) {
@@ -240,6 +256,35 @@ void handleRunningState() {
             display.addData(rxData);
             display.update();
             lastDataTime = millis();
+            
+            // Forward USB data to Bluetooth if connected
+            if (bluetooth.isConnected()) {
+                bluetooth.write(data, len);
+                ESP_LOGD(TAG, "Forwarded %d bytes from USB to Bluetooth", len);
+            }
+        }
+        
+        // Check for Bluetooth data to forward to USB
+        if (bluetooth.isConnected() && bluetooth.available() > 0) {
+            uint8_t btData[128];
+            size_t btLen = bluetooth.readBytes(btData, sizeof(btData));
+            
+            if (btLen > 0) {
+                // Forward Bluetooth data to USB/UART
+                uart_write_bytes(UART_NUM_1, btData, btLen);
+                
+                // Log the Bluetooth data
+                char btRxData[256];
+                snprintf(btRxData, sizeof(btRxData), "BT->USB: ");
+                for (int i = 0; i < btLen && i < 32; i++) {
+                    char hex[4];
+                    snprintf(hex, sizeof(hex), "%02X ", btData[i]);
+                    strcat(btRxData, hex);
+                }
+                logger.log(btRxData);
+                display.addData(btRxData);
+                ESP_LOGD(TAG, "Forwarded %d bytes from Bluetooth to USB", btLen);
+            }
         }
         
         // Check if we should send test message periodically

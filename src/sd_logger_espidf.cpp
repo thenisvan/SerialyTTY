@@ -16,9 +16,9 @@ bool SDLogger::begin() {
     return false;
 }
 
-void SDLogger::log(const char* message) {
+void SDLogger::log(String message) {
     if (!sdInitialized) {
-        ESP_LOGI(TAG, "[LOG] %s", message);
+        ESP_LOGI(TAG, "[LOG] %s", message.c_str());
         return;
     }
     
@@ -26,9 +26,9 @@ void SDLogger::log(const char* message) {
     logCounter++;
 }
 
-void SDLogger::logData(const char* direction, const char* data) {
+void SDLogger::logData(String direction, String data) {
     if (!sdInitialized) {
-        ESP_LOGI(TAG, "[DATA-%s] %s", direction, data);
+        ESP_LOGI(TAG, "[DATA-%s] %s", direction.c_str(), data.c_str());
         return;
     }
     
@@ -89,7 +89,9 @@ void SDLogger::close() {
 }
 
 const char* SDLogger::getFileName() {
-    return "/sdcard/sniffer.log";
+    // Return a fixed string; avoid dynamic String for C-string return
+    static const char filename[] = "/sdcard/sniffer.log";
+    return filename;
 }
 
 void SDLogger::ensureSDReady() {

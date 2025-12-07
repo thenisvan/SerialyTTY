@@ -1,5 +1,6 @@
 #include "comm_tester.h"
 #include "esp_log.h"
+#include "esp_timer.h"
 #include "driver/uart.h"
 #include "driver/gpio.h"
 #include "freertos/FreeRTOS.h"
@@ -18,13 +19,14 @@ CommTester::CommTester() {
 void CommTester::begin(uint32_t baud) {
     baudRate = baud;
     
-    // Configure UART
+    // Configure UART (fields must be in struct declaration order)
     uart_config_t uart_config = {
         .baud_rate = (int)baud,
         .data_bits = UART_DATA_8_BITS,
         .parity = UART_PARITY_DISABLE,
         .stop_bits = UART_STOP_BITS_1,
         .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
+        .rx_flow_ctrl_thresh = 0,
         .source_clk = UART_SCLK_DEFAULT,
     };
     
@@ -48,10 +50,10 @@ void CommTester::sendTestMessage() {
         return;
     }
     
-    size_t len = strlen(testMessage);
-    int written = uart_write_bytes(UART_NUM_1, testMessage, len);
+    size_t len = testMessage.length();
+    int written = uart_write_bytes(UART_NUM_1, testMessage.c_str(), len);
     
-    ESP_LOGI(TAG, "Sent test message: %s (%d bytes)", testMessage, written);
+    ESP_LOGI(TAG, "Sent test message (%d bytes)", written);
 }
 
 bool CommTester::waitForResponse(uint32_t timeout) {

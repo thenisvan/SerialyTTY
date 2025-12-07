@@ -1,3 +1,6 @@
+// Arduino-only SD logger implementation. For ESP-IDF, use sd_logger_espidf.cpp
+#if defined(ARDUINO) || defined(ARDUINO_ARCH_ESP32)
+
 #include "sd_logger.h"
 
 SDLogger::SDLogger() {
@@ -88,3 +91,4 @@ String SDLogger::getFileName() {
     return "LOG_" + String(time) + ".txt";
 }
 
+#endif // ARDUINO

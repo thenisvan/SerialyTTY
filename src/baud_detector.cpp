@@ -1,3 +1,8 @@
+// This file contains the Arduino-style implementation. It should only be
+// compiled when building for the Arduino framework. For ESP-IDF builds,
+// `baud_detector_espidf.cpp` provides the implementation.
+#if defined(ARDUINO) || defined(ARDUINO_ARCH_ESP32)
+
 #include "baud_detector.h"
 
 BaudDetector::BaudDetector(uint8_t rx, uint8_t tx) : rxPin(rx), txPin(tx) {
@@ -90,4 +95,6 @@ uint32_t BaudDetector::tryCommonBaudRates() {
     detectedBaud = detectBaudRate(2000);
     return detectedBaud;
 }
+
+#endif // ARDUINO
 

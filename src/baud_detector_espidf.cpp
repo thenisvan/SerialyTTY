@@ -1,5 +1,6 @@
 #include "baud_detector.h"
 #include "esp_log.h"
+#include "esp_timer.h"
 #include "driver/uart.h"
 #include "driver/gpio.h"
 #include "freertos/FreeRTOS.h"
@@ -39,6 +40,7 @@ bool BaudDetector::testBaudRate(uint32_t baud, uint32_t timeout) {
         .parity = UART_PARITY_DISABLE,
         .stop_bits = UART_STOP_BITS_1,
         .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
+        .rx_flow_ctrl_thresh = 0,
         .source_clk = UART_SCLK_DEFAULT,
     };
     

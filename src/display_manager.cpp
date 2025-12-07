@@ -1,3 +1,6 @@
+// Arduino-only display implementation. For ESP-IDF, use display_manager_espidf.cpp
+#if defined(ARDUINO) || defined(ARDUINO_ARCH_ESP32)
+
 #include "display_manager.h"
 
 DisplayManager::DisplayManager() {
@@ -215,4 +218,7 @@ String DisplayManager::getStateName(SystemState state) {
         default: return "Unknown";
     }
 }
+
+#endif // ARDUINO
+
 

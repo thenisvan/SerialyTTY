@@ -1,3 +1,6 @@
+// Arduino-style implementation. Compiled only when building with Arduino.
+#if defined(ARDUINO) || defined(ARDUINO_ARCH_ESP32)
+
 #include "comm_tester.h"
 
 CommTester::CommTester() {
@@ -51,4 +54,6 @@ void CommTester::resetSerial() {
     Serial1.end();
     delay(10);
 }
+
+#endif // ARDUINO
 

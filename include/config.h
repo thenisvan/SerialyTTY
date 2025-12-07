@@ -1,6 +1,8 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#include <cstdint>
+
 // Hardware Configuration
 #define RX_PIN 4
 #define TX_PIN 5
@@ -31,7 +33,7 @@
 #define MAX_LOG_LINES    1000
 
 // Common Baud Rates to Test
-const uint32_t BAUDRATES[] = {
+static const uint32_t BAUDRATES[] = {
     9600,
     19200,
     28800,

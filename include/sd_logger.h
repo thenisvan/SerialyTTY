@@ -1,16 +1,19 @@
 #ifndef SD_LOGGER_H
 #define SD_LOGGER_H
 
-#include <SD.h>
-#include <SPI.h>
 #include "config.h"
 
+#if defined(ARDUINO) || defined(ARDUINO_ARCH_ESP32)
+#include <SD.h>
+#include <SPI.h>
+#include <Arduino.h>
+#else
+#include <string>
+using String = std::string;
+class File {};  // Minimal placeholder
+#endif
+
 class SDLogger {
-private:
-    bool sdInitialized;
-    File logFile;
-    unsigned long logCounter;
-    
 public:
     SDLogger();
     bool begin();
@@ -21,9 +24,12 @@ public:
     void logTestResult(bool success);
     void flush();
     void close();
-    
+
 private:
-    String getFileName();
+    bool sdInitialized = false;
+    File logFile;
+    unsigned long logCounter = 0;
+    const char* getFileName();
     void ensureSDReady();
 };
 
