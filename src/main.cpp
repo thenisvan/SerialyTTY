@@ -56,19 +56,8 @@ static uint32_t millis() {
 void setup_hardware() {
     ESP_LOGI(TAG, "\n\n=== USB-TTL SNIFFER STARTING ===");
     
-    // Initialize UART_NUM_0 (USB Serial) for menu output
-    uart_config_t uart_config = {
-        .baud_rate = 115200,
-        .data_bits = UART_DATA_8_BITS,
-        .parity = UART_PARITY_DISABLE,
-        .stop_bits = UART_STOP_BITS_1,
-        .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
-        .source_clk = UART_SCLK_DEFAULT,
-    };
-    uart_driver_install(UART_NUM_0, 1024, 1024, 0, NULL, 0);
-    uart_param_config(UART_NUM_0, &uart_config);
-    
-    ESP_LOGI(TAG, "USB Serial initialized");
+    // Note: UART_NUM_0 is already initialized by ESP-IDF as console
+    // We'll use printf() for menu output instead of direct UART writes
     
     // Detect hardware modules
     ESP_LOGI(TAG, "Scanning for hardware modules...");
@@ -406,76 +395,67 @@ void handleMenuState() {
     }
     
     // Check for user input
-    uint8_t data[16];
-    int len = uart_read_bytes(UART_NUM_0, data, sizeof(data), pdMS_TO_TICKS(100));
+    int c = getchar();
     
-    if (len > 0) {
-        for (int i = 0; i < len; i++) {
-            char c = (char)data[i];
-            
-            // Echo the character
-            uart_write_bytes(UART_NUM_0, &c, 1);
-            
-            // Handle the input
-            menu.handleInput(c);
-            
-            // Check for commands that change state
-            char cmd = menu.getLastCommand();
-            if (cmd != 0) {
-                switch (cmd) {
-                    case 'D':  // Detect baud rate
-                        ESP_LOGI(TAG, "Starting baud detection...");
-                        uart_write_bytes(UART_NUM_0, "\r\n\r\n", 4);
+    if (c != EOF) {
+        // Echo the character
+        printf("%c", (char)c);
+        
+        // Handle the input
+        menu.handleInput((char)c);
+        
+        // Check for commands that change state
+        char cmd = menu.getLastCommand();
+        if (cmd != 0) {
+            switch (cmd) {
+                case 'D':  // Detect baud rate
+                    ESP_LOGI(TAG, "Starting baud detection...");
+                    printf("\r\n\r\n");
+                    menuShown = false;
+                    changeState(STATE_ANALYZING);
+                    break;
+                    
+                case 'B':  // Enter bridge mode
+                    if (detectedBaud > 0) {
+                        ESP_LOGI(TAG, "Entering bridge mode...");
+                        printf("\r\n\r\n");
                         menuShown = false;
-                        changeState(STATE_ANALYZING);
-                        break;
+                        changeState(STATE_BRIDGE_MODE);
+                    } else {
+                        printf("\r\n[ERROR] No baud rate detected. Run detection first.\r\n");
+                        menuShown = false;  // Redraw menu
+                    }
+                    break;
                         
-                    case 'B':  // Enter bridge mode
-                        if (detectedBaud > 0) {
-                            ESP_LOGI(TAG, "Entering bridge mode...");
-                            uart_write_bytes(UART_NUM_0, "\r\n\r\n", 4);
+                case 'R':  // Reset detection
+                    ESP_LOGI(TAG, "Resetting...");
+                    printf("\r\n\r\n");
+                    detectedBaud = 0;
+                    bridge.resetStats();
+                    menuShown = false;
+                    changeState(STATE_WAITING);
+                    break;
+                    
+                case '1':  // Manual baud rates
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                    {
+                        uint32_t baudRates[] = {9600, 19200, 38400, 57600, 115200};
+                        int idx = cmd - '1';
+                        if (idx >= 0 && idx < 5) {
+                            detectedBaud = baudRates[idx];
+                            printf("\r\nBaud rate set to %lu\r\n", (unsigned long)detectedBaud);
+                            ESP_LOGI(TAG, "Manual baud rate: %lu", (unsigned long)detectedBaud);
+                            vTaskDelay(pdMS_TO_TICKS(1000));
                             menuShown = false;
-                            changeState(STATE_BRIDGE_MODE);
-                        } else {
-                            const char* msg = "\r\n[ERROR] No baud rate detected. Run detection first.\r\n";
-                            uart_write_bytes(UART_NUM_0, msg, strlen(msg));
-                            menuShown = false;  // Redraw menu
                         }
-                        break;
-                        
-                    case 'R':  // Reset detection
-                        ESP_LOGI(TAG, "Resetting...");
-                        uart_write_bytes(UART_NUM_0, "\r\n\r\n", 4);
-                        detectedBaud = 0;
-                        bridge.resetStats();
-                        menuShown = false;
-                        changeState(STATE_WAITING);
-                        break;
-                        
-                    case '1':  // Manual baud rates
-                    case '2':
-                    case '3':
-                    case '4':
-                    case '5':
-                        {
-                            uint32_t baudRates[] = {9600, 19200, 38400, 57600, 115200};
-                            int idx = cmd - '1';
-                            if (idx >= 0 && idx < 5) {
-                                detectedBaud = baudRates[idx];
-                                char msg[64];
-                                snprintf(msg, sizeof(msg), "\r\nBaud rate set to %lu\r\n", 
-                                        (unsigned long)detectedBaud);
-                                uart_write_bytes(UART_NUM_0, msg, strlen(msg));
-                                ESP_LOGI(TAG, "Manual baud rate: %lu", (unsigned long)detectedBaud);
-                                vTaskDelay(pdMS_TO_TICKS(1000));
-                                menuShown = false;
-                            }
-                        }
-                        break;
-                }
-                
-                menu.clearCommand();
+                    }
+                    break;
             }
+            
+            menu.clearCommand();
         }
     }
 }

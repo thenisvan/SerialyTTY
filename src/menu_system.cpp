@@ -1,6 +1,5 @@
 #include "menu_system.h"
 #include "esp_log.h"
-#include "driver/uart.h"
 #include <cstring>
 #include <cstdio>
 
@@ -28,8 +27,7 @@ MenuSystem::MenuSystem() :
 }
 
 void MenuSystem::printLine(const char* line) {
-    uart_write_bytes(UART_NUM_0, line, strlen(line));
-    uart_write_bytes(UART_NUM_0, "\r\n", 2);
+    printf("%s\r\n", line);
 }
 
 void MenuSystem::printHeader(const char* title) {
@@ -52,7 +50,7 @@ void MenuSystem::printSeparator() {
 }
 
 void MenuSystem::clearScreen() {
-    uart_write_bytes(UART_NUM_0, ANSI_CLEAR, strlen(ANSI_CLEAR));
+    printf(ANSI_CLEAR);
 }
 
 void MenuSystem::showMainMenu() {
