@@ -13,10 +13,12 @@
 #include "sd_logger.h"
 #include "comm_tester.h"
 #include "bluetooth_manager.h"
+#include "hardware_detector.h"
 
 static const char *TAG = "MAIN";
 
 // Global objects
+HardwareDetector hwDetector;
 DisplayManager display;
 SDLogger logger;
 BaudDetector baudDetector;
@@ -48,7 +50,11 @@ static uint32_t millis() {
 void setup_hardware() {
     ESP_LOGI(TAG, "\n\n=== USB-TTL SNIFFER STARTING ===");
     
-    // Initialize display
+    // Detect hardware modules
+    ESP_LOGI(TAG, "Scanning for hardware modules...");
+    HardwareConfig hwConfig = hwDetector.scanAll();
+    
+    // Initialize display (if present)
     bool displayPresent = display.begin();
     if (!displayPresent) {
         ESP_LOGW(TAG, "Display not detected — continuing without display.");

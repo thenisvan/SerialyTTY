@@ -16,7 +16,13 @@
 #define TFT_MISO  13
 
 // SD Card Configuration
-#define SD_CS     9
+#define SD_CS      9
+#define SD_CS_PIN  SD_CS  // Alias for hardware detector
+
+// I2C Configuration (for hardware detection)
+#define I2C_SDA_PIN  6
+#define I2C_SCL_PIN  7
+#define I2C_FREQ_HZ  100000  // 100kHz
 
 // Baud Rate Detection
 #define MIN_BAUD_RATE    9600
