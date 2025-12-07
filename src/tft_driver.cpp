@@ -91,7 +91,7 @@ bool TFTDriver::begin() {
     io_conf.intr_type = GPIO_INTR_DISABLE;
     gpio_config(&io_conf);
     
-    // Initialize SPI bus
+    // Initialize SPI bus (shared with SD card, may already be initialized)
     spi_bus_config_t buscfg = {};
     buscfg.mosi_io_num = TFT_MOSI_PIN;
     buscfg.miso_io_num = TFT_MISO_PIN;
@@ -101,9 +101,12 @@ bool TFTDriver::begin() {
     buscfg.max_transfer_sz = TFT_WIDTH * TFT_HEIGHT * 2 + 8;
     
     esp_err_t ret = spi_bus_initialize(SPI2_HOST, &buscfg, SPI_DMA_CH_AUTO);
-    if (ret != ESP_OK) {
+    if (ret != ESP_OK && ret != ESP_ERR_INVALID_STATE) {
         ESP_LOGE(TAG, "SPI bus initialization failed: %s", esp_err_to_name(ret));
         return false;
+    }
+    if (ret == ESP_ERR_INVALID_STATE) {
+        ESP_LOGI(TAG, "SPI bus already initialized (shared with SD card)");
     }
     
     // Configure SPI device
@@ -113,18 +116,19 @@ bool TFTDriver::begin() {
     devcfg.spics_io_num = TFT_CS_PIN;
     devcfg.queue_size = 7;
     devcfg.pre_cb = nullptr;
+    devcfg.flags = 0;
     
     ret = spi_bus_add_device(SPI2_HOST, &devcfg, &spi);
     if (ret != ESP_OK) {
         ESP_LOGE(TAG, "SPI device add failed: %s", esp_err_to_name(ret));
-        spi_bus_free(SPI2_HOST);
         return false;
     }
     
     // Hardware reset
     reset();
     
-    // Initialize ILI9341
+    // Try to initialize ILI9341 - if it fails, display is not present
+    ESP_LOGI(TAG, "Attempting to initialize ILI9341 controller...");
     writeCommand(ILI9341_SWRESET);
     vTaskDelay(pdMS_TO_TICKS(150));
     
@@ -167,6 +171,7 @@ void TFTDriver::writeCommand(uint8_t cmd) {
     spi_transaction_t t = {};
     t.length = 8;
     t.tx_buffer = &cmd;
+    t.flags = 0;
     spi_device_polling_transmit(spi, &t);
 }
 
@@ -175,6 +180,7 @@ void TFTDriver::writeData(uint8_t data) {
     spi_transaction_t t = {};
     t.length = 8;
     t.tx_buffer = &data;
+    t.flags = 0;
     spi_device_polling_transmit(spi, &t);
 }
 
@@ -184,6 +190,7 @@ void TFTDriver::writeData16(uint16_t data) {
     spi_transaction_t t = {};
     t.length = 16;
     t.tx_buffer = buf;
+    t.flags = 0;
     spi_device_polling_transmit(spi, &t);
 }
 

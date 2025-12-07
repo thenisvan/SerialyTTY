@@ -56,6 +56,20 @@ static uint32_t millis() {
 void setup_hardware() {
     ESP_LOGI(TAG, "\n\n=== USB-TTL SNIFFER STARTING ===");
     
+    // Initialize UART_NUM_0 (USB Serial) for menu output
+    uart_config_t uart_config = {
+        .baud_rate = 115200,
+        .data_bits = UART_DATA_8_BITS,
+        .parity = UART_PARITY_DISABLE,
+        .stop_bits = UART_STOP_BITS_1,
+        .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
+        .source_clk = UART_SCLK_DEFAULT,
+    };
+    uart_driver_install(UART_NUM_0, 1024, 1024, 0, NULL, 0);
+    uart_param_config(UART_NUM_0, &uart_config);
+    
+    ESP_LOGI(TAG, "USB Serial initialized");
+    
     // Detect hardware modules
     ESP_LOGI(TAG, "Scanning for hardware modules...");
     HardwareConfig hwConfig = hwDetector.scanAll();
