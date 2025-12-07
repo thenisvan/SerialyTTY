@@ -2,6 +2,7 @@
 #define BAUD_DETECTOR_H
 
 #include "config.h"
+#include "esp_attr.h"  // For IRAM_ATTR
 
 #if defined(ARDUINO) || defined(ARDUINO_ARCH_ESP32)
 #include <HardwareSerial.h>

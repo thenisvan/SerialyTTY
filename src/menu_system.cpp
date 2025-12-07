@@ -33,7 +33,7 @@ void MenuSystem::printLine(const char* line) {
 }
 
 void MenuSystem::printHeader(const char* title) {
-    char header[100];
+    char header[200];  // Increased buffer size for ANSI codes
     snprintf(header, sizeof(header), 
              ANSI_BOLD ANSI_CYAN "╔════════════════════════════════════════╗" ANSI_RESET);
     printLine(header);

@@ -4,6 +4,10 @@
 #include <cstdint>
 #include "driver/uart.h"
 
+// Forward declarations
+class DisplayManager;
+class SDLogger;
+
 // Escape sequence detection
 #define ESCAPE_SEQUENCE "~~~"
 #define ESCAPE_SEQ_LEN 3
@@ -25,6 +29,10 @@ public:
     uint32_t getBytesRx() const { return bytesReceived; }
     uint32_t getBytesTx() const { return bytesSent; }
     void resetStats();
+    
+    // Set optional components
+    void setDisplay(DisplayManager* disp) { display = disp; }
+    void setLogger(SDLogger* logger) { sdLogger = logger; }
 
 private:
     bool active;
@@ -38,6 +46,10 @@ private:
     char escapeBuffer[ESCAPE_SEQ_LEN];
     uint8_t escapeIndex;
     uint64_t lastEscapeChar;
+    
+    // Optional components
+    DisplayManager* display;
+    SDLogger* sdLogger;
     
     bool checkEscapeSequence(char c);
     void resetEscapeDetection();

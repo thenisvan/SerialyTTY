@@ -1,5 +1,7 @@
 #include "bridge_mode.h"
 #include "config.h"
+#include "display_manager.h"
+#include "sd_logger.h"
 #include "esp_log.h"
 #include "esp_timer.h"
 #include "driver/uart.h"
@@ -13,7 +15,9 @@ BridgeMode::BridgeMode() :
     bytesReceived(0),
     bytesSent(0),
     escapeIndex(0),
-    lastEscapeChar(0)
+    lastEscapeChar(0),
+    display(nullptr),
+    sdLogger(nullptr)
 {
     memset(escapeBuffer, 0, sizeof(escapeBuffer));
 }
@@ -107,6 +111,16 @@ void BridgeMode::forwardUsbToTarget(const uint8_t* data, size_t len) {
     int written = uart_write_bytes(UART_NUM_1, data, len);
     if (written > 0) {
         bytesSent += written;
+        
+        // Log to SD if available
+        if (sdLogger && sdLogger->isReady()) {
+            sdLogger->logData("TX", data, written);
+        }
+        
+        // Update display if available
+        if (display && display->isPresent()) {
+            display->setDataStats(bytesReceived, bytesSent);
+        }
     }
 }
 
@@ -115,6 +129,16 @@ void BridgeMode::forwardTargetToUsb(const uint8_t* data, size_t len) {
     int written = uart_write_bytes(UART_NUM_0, data, len);
     if (written > 0) {
         bytesReceived += written;
+        
+        // Log to SD if available
+        if (sdLogger && sdLogger->isReady()) {
+            sdLogger->logData("RX", data, written);
+        }
+        
+        // Update display if available
+        if (display && display->isPresent()) {
+            display->setDataStats(bytesReceived, bytesSent);
+        }
     }
 }
 

@@ -110,6 +110,10 @@ void setup_hardware() {
                             hwConfig.sdCardPresent, 
                             hwConfig.accelerometerPresent);
     
+    // Link display and logger to bridge mode
+    bridge.setDisplay(&display);
+    bridge.setLogger(&logger);
+    
     // Transition to menu state
     currentState = STATE_MENU;
     stateChangeTime = millis();
