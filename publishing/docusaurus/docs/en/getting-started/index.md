@@ -208,7 +208,7 @@ ESP32-C6 may have limited support on Apple Silicon. Solutions:
 
 - Read the [Hardware Guide](../hardware/index.md) for detailed pin configurations
 - Explore [Features](../features/index.md) to learn about all capabilities
-<!-- - Check [Testing Guide](../testing/index.md) for validation procedures -->
+- Check [Testing Guide](../testing) for validation procedures
 - Review [Architecture](../architecture/index.md) to understand the system design
 
 ## Getting Help

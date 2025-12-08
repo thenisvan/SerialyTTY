@@ -441,4 +441,4 @@ if (err != ESP_OK) {
 
 ---
 
-<!-- **Next:** Learn about [Testing](../testing/index.md) procedures and validation. -->
+**Next:** Learn about [Testing](../testing) procedures and validation.
