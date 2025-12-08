@@ -1,17 +1,18 @@
-# 🔌 SmvIT - Professional USB-TTL Bridge with Auto Baud Detection
+# 🔌 SerialyTTY - Professional USB-TTL Bridge with Auto Baud Detection
 
 > An intelligent ESP32-C6 USB-to-TTL serial bridge with automatic baud rate detection, TFT display support, SD card logging, and interactive terminal interface.
 
 **Status:** ✅ Production Ready (Phase 4 Complete)  
 **License:** Dual License (MIT for code, CC-BY-4.0 for documentation)  
 **Repository:** [thenisvan/SerialyTTY](https://github.com/thenisvan/SerialyTTY)  
+**Documentation:** [SerialyTTY Docs](https://thenisvan.github.io/SerialyTTY/)  
 **Last Updated:** December 8, 2025
 
 ---
 
 ## 🎯 Overview
 
-SmvIT is a professional-grade USB-to-TTL serial bridge device built on ESP32-C6 that intelligently detects baud rates, bridges serial communication, and provides comprehensive logging and monitoring capabilities. It's designed for developers, embedded engineers, and hardware testers who need reliable serial communication diagnostics.
+SerialyTTY is a professional-grade USB-to-TTL serial bridge device built on ESP32-C6 that intelligently detects baud rates, bridges serial communication, and provides comprehensive logging and monitoring capabilities. It's designed for developers, embedded engineers, and hardware testers who need reliable serial communication diagnostics.
 
 ### 🌟 Key Features
 
