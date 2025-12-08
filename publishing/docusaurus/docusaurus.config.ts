@@ -63,9 +63,9 @@ const config: Config = {
         href: '/',
       },
       items: [
-        { to: '/getting-started', label: 'Getting Started', position: 'left' },
-        { to: '/hardware', label: 'Hardware', position: 'left' },
-        { to: '/features', label: 'Features', position: 'left' },
+        { to: '/en/getting-started', label: 'Getting Started', position: 'left' },
+        { to: '/en/hardware', label: 'Hardware', position: 'left' },
+        { to: '/en/features', label: 'Features', position: 'left' },
         {
           href: GITHUB_REPO_URL || 'https://github.com/thenisvan/SerialyTTY',
           label: 'GitHub',

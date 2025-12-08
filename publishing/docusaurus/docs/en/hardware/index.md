@@ -1,5 +1,5 @@
 ---
-id: hardware
+id: index
 title: Hardware Guide
 sidebar_position: 2
 ---
@@ -27,7 +27,7 @@ Complete hardware configuration and pin mapping for SerialyTTY.
 ### Power Requirements
 - **Input Voltage**: 5V via USB-C
 - **Operating Current**: ~100mA (typical), up to 500mA with peripherals
-- **Deep Sleep**: <10µA (when implemented)
+- **Deep Sleep**: &lt;10µA (when implemented)
 
 ## Pin Configuration
 

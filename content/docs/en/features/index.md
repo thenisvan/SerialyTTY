@@ -1,5 +1,5 @@
 ---
-id: features
+id: index
 title: Features Overview
 sidebar_position: 3
 ---
@@ -28,9 +28,9 @@ Automatically detects the communication speed of connected devices without manua
 
 **Technical details:**
 - Precision: ±2% tolerance
-- Detection time: <1 second (typical)
+- Detection time: &lt;1 second (typical)
 - Minimum data: 8 bytes required
-- Interrupt latency: <10µs
+- Interrupt latency: &lt;10µs
 
 ### 🔄 Transparent Bridge Mode
 
@@ -44,7 +44,7 @@ Bidirectional serial data passthrough between USB and UART.
 
 **Performance:**
 - Throughput: Up to 115200 bps
-- Latency: <1ms typical
+- Latency: &lt;1ms typical
 - Buffer overflow protection
 - Error detection and logging
 

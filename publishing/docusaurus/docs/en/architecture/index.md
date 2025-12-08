@@ -1,5 +1,5 @@
 ---
-id: architecture
+id: index
 title: Software Architecture
 sidebar_position: 4
 ---
@@ -425,8 +425,8 @@ if (err != ESP_OK) {
 ### Typical Operation
 
 - **Boot time**: ~3 seconds
-- **Baud detection**: <1 second
-- **Bridge latency**: <1 ms
+- **Baud detection**: &lt;1 second
+- **Bridge latency**: &lt;1 ms
 - **Display update**: 30 FPS
 - **SD write speed**: ~100 KB/s
 - **CPU utilization**: 15-25%
