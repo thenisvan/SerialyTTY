@@ -11,18 +11,6 @@ on:
   workflow_dispatch:
 
 
-name: Deploy Documentation
-
-on:
-  push:
-    branches:
-    - main
-    paths:
-    - 'content/docs/**'
-    - 'publishing/docusaurus/**'
-    - '.github/workflows/docs.yml'
-  workflow_dispatch:
-
 permissions:
   contents: read
   pages: write
