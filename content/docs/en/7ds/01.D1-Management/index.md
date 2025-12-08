@@ -1,5 +1,9 @@
-# $(basename "$dir" | sed 's/^[0-9]*\.//')
+---
+title: D1 Management
+---
 
-This section contains documentation for $(basename "$dir" | sed 's/^[0-9]*\.//' | tr '-' ' ').
+# D1-Management
+
+This section contains documentation for D1 Management.
 
 Browse the subsections using the sidebar navigation.

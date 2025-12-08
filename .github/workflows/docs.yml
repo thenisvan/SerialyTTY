@@ -8,6 +8,13 @@ on:
     - 'content/docs/**'
     - 'publishing/docusaurus/**'
     - '.github/workflows/docs.yml'
+  pull_request:
+    branches:
+    - main
+    paths:
+    - 'content/docs/**'
+    - 'publishing/docusaurus/**'
+    - '.github/workflows/docs.yml'
   workflow_dispatch:
 
 

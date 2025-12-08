@@ -4,7 +4,7 @@ const sidebars: SidebarsConfig = {
   docsSidebar: [
     {
       type: 'doc',
-      id: 'SERIALYTTY_HOME',
+      id: 'en/index',
       label: '🏠 Home',
     },
     {
@@ -46,7 +46,7 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
-      label: '🧭 7Ds Framework',
+      label: '7DS Strategy',
       link: {
         type: 'doc',
         id: 'en/7ds/index',
@@ -57,6 +57,11 @@ const sidebars: SidebarsConfig = {
           dirName: 'en/7ds',
         },
       ],
+    },
+    {
+      type: 'doc',
+      id: 'en/testing/index',
+      label: '🧪 Testing',
     },
   ],
 };
