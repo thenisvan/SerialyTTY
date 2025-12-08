@@ -53,7 +53,9 @@ jobs:
       run: npm ci
 
     - name: Sync content
-      run: rsync -av --delete content/docs/ publishing/docusaurus/docs/
+      run: |
+        rsync -av --delete content/docs/ publishing/docusaurus/docs/
+        cp content/sidebars-serialytty.ts publishing/docusaurus/sidebars-serialytty.ts
 
     - name: Build documentation
       working-directory: publishing/docusaurus

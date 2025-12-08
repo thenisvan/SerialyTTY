@@ -4,7 +4,7 @@ const sidebars: SidebarsConfig = {
   docsSidebar: [
     {
       type: 'doc',
-      id: 'SERIALYTTY_HOME',
+      id: 'en/SERIALYTTY_HOME',
       label: '🏠 Home',
     },
     {

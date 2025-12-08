@@ -1,6 +1,7 @@
 ---
-title: 7 Dimensions of Strategy
-sidebar_label: 7DS Strategy
+id: index
+title: 7 Dimensions
+sidebar_label: 7 Dimensions
 ---
 
 # 7Ds – Navigačný rozcestník

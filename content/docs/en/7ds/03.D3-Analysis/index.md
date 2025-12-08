@@ -19,8 +19,8 @@ Most market solutions are simple FTDI or CP210x chips on a breakout board. High-
 - **Power:** USB-C powered.
 
 ### Non-Functional Requirements
-- **Latency:** Minimal latency in bridge mode (<1ms).
-- **Boot Time:** Instant on (<2s).
+- **Latency:** Minimal latency in bridge mode (&lt;1ms).
+- **Boot Time:** Instant on (&lt;2s).
 - **Durability:** Robust PCB design for field use.
 
 ## Resource Analysis

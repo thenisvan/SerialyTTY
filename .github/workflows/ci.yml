@@ -50,4 +50,4 @@ jobs:
         pip install platformio
 
     - name: Run PlatformIO
-      run: pio run
+      run: pio run -e esp32c6
