@@ -21,31 +21,34 @@
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme='dark'] {
-  /* Primary color - keeping it consistent or slightly adjusted for dark mode */
+  /* Modern Dark Theme - Teal/Blue Accent */
   --ifm-color-primary: #25c2a0;
   --ifm-color-primary-dark: #21af90;
   --ifm-color-primary-darker: #1fa588;
   --ifm-color-primary-darkest: #1a8870;
   --ifm-color-primary-light: #29d5b0;
   --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
+  --ifm-color-primary-lightest: #4fe1c2;
 
-  /* Backgrounds - Standard Dark Mode */
+  /* Backgrounds - Clean Dark Gray */
   --ifm-background-color: #1b1b1d;
   --ifm-background-surface-color: #242526;
   --ifm-navbar-background-color: #242526;
 
   /* Sidebar / menu */
-  --ifm-menu-color-background-active: rgba(255, 255, 255, 0.05);
-  --ifm-menu-color-background-hover: rgba(255, 255, 255, 0.03);
+  --ifm-menu-color-background-active: rgba(37, 194, 160, 0.1);
+  --ifm-menu-color-background-hover: rgba(37, 194, 160, 0.05);
   --ifm-menu-color: #e3e3e3;
 
   /* Text & headings */
   --ifm-font-color-base: #e3e3e3;
   --ifm-heading-color: #ffffff;
-  
+  --ifm-color-emphasis-600: #9ca3af;
+  --ifm-color-emphasis-700: #d1d5db;
+
   /* Links */
   --ifm-link-color: #25c2a0;
+  --ifm-link-hover-color: #32d8b4;
   --ifm-link-hover-color: #ffe39d;
   --ifm-link-color-visited: #f5b25c;
 

@@ -66,6 +66,7 @@ const config: Config = {
         { to: '/en/getting-started', label: 'Getting Started', position: 'left' },
         { to: '/en/hardware', label: 'Hardware', position: 'left' },
         { to: '/en/features', label: 'Features', position: 'left' },
+        { to: '/en/7ds', label: '7 Dimensions', position: 'left' },
         {
           href: GITHUB_REPO_URL || 'https://github.com/thenisvan/SerialyTTY',
           label: 'GitHub',
