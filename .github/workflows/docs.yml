@@ -11,15 +11,30 @@ on:
   workflow_dispatch:
 
 
+name: Deploy Documentation
+
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - 'content/docs/**'
+    - 'publishing/docusaurus/**'
+    - '.github/workflows/docs.yml'
+  workflow_dispatch:
+
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
 
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
+jobs:
+  build:
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -51,12 +66,18 @@ jobs:
         SITE_URL: https://${{ github.repository_owner }}.github.io
         BASE_URL: /${{ github.event.repository.name }}/
 
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./publishing/docusaurus/build
-        publish_branch: gh-pages
-        user_name: 'github-actions[bot]'
-        user_email: 'github-actions[bot]@users.noreply.github.com'
-        commit_message: 'Deploy documentation: ${{ github.event.head_commit.message }}'
+        path: publishing/docusaurus/build
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
