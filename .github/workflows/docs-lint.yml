@@ -1,0 +1,59 @@
+name: Docs Lint and Test
+
+on:
+  pull_request:
+    paths:
+      - 'content/docs/**'
+      - 'publishing/docusaurus/**'
+      - '.github/workflows/docs-lint.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'content/docs/**'
+      - 'publishing/docusaurus/**'
+      - '.github/workflows/docs-lint.yml'
+
+jobs:
+  lint-and-build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: publishing/docusaurus/package-lock.json
+
+      - name: Install dependencies
+        working-directory: publishing/docusaurus
+        run: npm ci
+
+      - name: Sync content
+        run: rsync -av --delete content/docs/ publishing/docusaurus/docs/
+
+      - name: Lint markdown files
+        working-directory: publishing/docusaurus
+        run: |
+          npx markdownlint-cli2 "docs/**/*.md" || true
+
+      - name: Build documentation
+        working-directory: publishing/docusaurus
+        run: npm run build
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+          COMMIT_SHA: ${{ github.sha }}
+          BUILD_DATE: ${{ github.event.head_commit.timestamp }}
+          GITHUB_REPO_URL: ${{ github.server_url }}/${{ github.repository }}
+          SITE_URL: https://${{ github.repository_owner }}.github.io
+          BASE_URL: /${{ github.event.repository.name }}/
+
+      - name: Check for broken links
+        working-directory: publishing/docusaurus
+        run: |
+          echo "Build completed. Check warnings for broken links."
+          # Future: Add link checker tool here

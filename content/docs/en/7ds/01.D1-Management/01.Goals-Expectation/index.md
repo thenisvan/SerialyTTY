@@ -1,0 +1,5 @@
+# Goals & Expectations
+
+Sekcia **Goals & Expectations** – vyplňte obsah podľa potreby.
+
+---

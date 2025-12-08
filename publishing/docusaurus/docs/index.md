@@ -29,10 +29,10 @@ sidebar_position: 1
 
 - 📖 [**Getting Started**](./en/getting-started/index.md) - Setup and first steps
 - 🔧 [**Hardware Guide**](./en/hardware/index.md) - Pin configurations and wiring
-- ⚡ [**Features**](./en/features/index.md) - Core functionality overview
+- 📚 [**Features**](./en/features/index.md) - Core functionality overview
 - 💻 [**Software Architecture**](./en/architecture/index.md) - System design and modules
-- 🧪 [**Testing & Integration**](./en/testing/index.md) - Test plans and validation
-- 📚 [**API Reference**](./en/api/index.md) - Code documentation
+<!-- - 🧪 [**Testing & Integration**](./en/testing/index.md) - Test plans and validation -->
+<!-- - 📚 [**API Reference**](./en/api/index.md) - Code documentation -->
 
 ## 🎯 Project Overview
 
@@ -96,7 +96,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guide](./en/contributing.md) for details.
+We welcome contributions! Please check our [GitHub repository](https://github.com/thenisvan/SerialyTTY) for the latest updates and contribution guidelines.
 
 ---
 
