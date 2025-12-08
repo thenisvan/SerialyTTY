@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en" dir="ltr" class="docs-wrapper plugin-docs plugin-id-default docs-version-current docs-doc-page docs-doc-id-en/hardware/index" data-has-hydrated="false">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v3.9.2">
+<title data-rh="true">Hardware Guide | SerialyTTY Documentation</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://thenisvan.github.io/SerialyTTY/en/hardware/"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="Hardware Guide | SerialyTTY Documentation"><meta data-rh="true" name="description" content="Complete hardware configuration and pin mapping for SerialyTTY."><meta data-rh="true" property="og:description" content="Complete hardware configuration and pin mapping for SerialyTTY."><link data-rh="true" rel="icon" href="/SerialyTTY/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://thenisvan.github.io/SerialyTTY/en/hardware/"><link data-rh="true" rel="alternate" href="https://thenisvan.github.io/SerialyTTY/en/hardware/" hreflang="en"><link data-rh="true" rel="alternate" href="https://thenisvan.github.io/SerialyTTY/en/hardware/" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"🔧 Hardware","item":"https://thenisvan.github.io/SerialyTTY/en/hardware/"}]}</script><link rel="stylesheet" href="/SerialyTTY/assets/css/styles.fdfd9de9.css">
+<script src="/SerialyTTY/assets/js/runtime~main.722392e8.js" defer="defer"></script>
+<script src="/SerialyTTY/assets/js/main.7fe89321.js" defer="defer"></script>
+</head>
+<body class="navigation-with-keyboard">
+<svg style="display: none;"><defs>
+<symbol id="theme-svg-external-link" viewBox="0 0 24 24"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"/></symbol>
+</defs></svg>
+<script>!function(){var t=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return window.localStorage.getItem("theme")}catch(t){}}();document.documentElement.setAttribute("data-theme",t||"light"),document.documentElement.setAttribute("data-theme-choice",t||"light")}(),function(){try{const c=new URLSearchParams(window.location.search).entries();for(var[t,e]of c)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><div role="region" aria-label="Skip to main content"><a class="skipToContent_fXgn" href="#__docusaurus_skipToContent_fallback">Skip to main content</a></div><nav aria-label="Main" class="theme-layout-navbar navbar navbar--fixed-top"><div class="navbar__inner"><div class="theme-layout-navbar-left navbar__items"><button aria-label="Toggle navigation bar" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" target="_self" href="/SerialyTTY/"><div class="navbar__logo"><img src="/SerialyTTY/img/logo.png" alt="SerialyTTY" class="themedComponent_mlkZ themedComponent--light_NVdE"><img src="/SerialyTTY/img/logo-dark.png" alt="SerialyTTY" class="themedComponent_mlkZ themedComponent--dark_xIcU"></div><b class="navbar__title text--truncate">SerialyTTY</b></a><a class="navbar__item navbar__link" href="/SerialyTTY/en/getting-started">Getting Started</a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/SerialyTTY/en/hardware">Hardware</a><a class="navbar__item navbar__link" href="/SerialyTTY/en/features">Features</a></div><div class="theme-layout-navbar-right navbar__items navbar__items--right"><a href="https://github.com/thenisvan/SerialyTTY" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a><a href="https://github.com/thenisvan/SerialyTTY/commit/local" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">v1.0 • local<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type="button" disabled="" title="system mode" aria-label="Switch between dark and light mode (currently system mode)"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon_g3eP lightToggleIcon_pyhR"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon_g3eP darkToggleIcon_wfgR"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon_g3eP systemToggleIcon_QzmC"><path fill="currentColor" d="m12 21c4.971 0 9-4.029 9-9s-4.029-9-9-9-9 4.029-9 9 4.029 9 9 9zm4.95-13.95c1.313 1.313 2.05 3.093 2.05 4.95s-0.738 3.637-2.05 4.95c-1.313 1.313-3.093 2.05-4.95 2.05v-14c1.857 0 3.637 0.737 4.95 2.05z"></path></svg></button></div><div class="navbarSearchContainer_Bca1"></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="theme-layout-main main-wrapper mainWrapper_z2l0"><div class="docsWrapper_hBAB"><button aria-label="Scroll back to top" class="clean-btn theme-back-to-top-button backToTopButton_sjWU" type="button"></button><div class="docRoot_UBD9"><aside class="theme-doc-sidebar-container docSidebarContainer_YfHR"><div class="sidebarViewport_aRkj"><div class="sidebar_njMd"><nav aria-label="Docs sidebar" class="menu thin-scrollbar menu_SIkG"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/SerialyTTY/"><span title="🏠 Home" class="linkLabel_WmDU">🏠 Home</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/SerialyTTY/en/getting-started/"><span title="🚀 Getting Started" class="linkLabel_WmDU">🚀 Getting Started</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" href="/SerialyTTY/en/hardware/"><span title="🔧 Hardware" class="linkLabel_WmDU">🔧 Hardware</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/SerialyTTY/en/features/"><span title="⚡ Features" class="linkLabel_WmDU">⚡ Features</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/SerialyTTY/en/architecture/"><span title="💻 Architecture" class="linkLabel_WmDU">💻 Architecture</span></a></li></ul></nav><button type="button" title="Collapse sidebar" aria-label="Collapse sidebar" class="button button--secondary button--outline collapseSidebarButton_PEFL"><svg width="20" height="20" aria-hidden="true" class="collapseSidebarButtonIcon_kv0_"><g fill="#7a7a7a"><path d="M9.992 10.023c0 .2-.062.399-.172.547l-4.996 7.492a.982.982 0 01-.828.454H1c-.55 0-1-.453-1-1 0-.2.059-.403.168-.551l4.629-6.942L.168 3.078A.939.939 0 010 2.528c0-.548.45-.997 1-.997h2.996c.352 0 .649.18.828.45L9.82 9.472c.11.148.172.347.172.55zm0 0"></path><path d="M19.98 10.023c0 .2-.058.399-.168.547l-4.996 7.492a.987.987 0 01-.828.454h-3c-.547 0-.996-.453-.996-1 0-.2.059-.403.168-.551l4.625-6.942-4.625-6.945a.939.939 0 01-.168-.55 1 1 0 01.996-.997h3c.348 0 .649.18.828.45l4.996 7.492c.11.148.168.347.168.55zm0 0"></path></g></svg></button></div></div></aside><main class="docMainContainer_TBSr"><div class="container padding-top--md padding-bottom--lg"><div class="row"><div class="col docItemCol_VOVn"><div class="docItemContainer_Djhp"><article><nav class="theme-doc-breadcrumbs breadcrumbsContainer_Z_bl" aria-label="Breadcrumbs"><ul class="breadcrumbs"><li class="breadcrumbs__item"><a aria-label="Home page" class="breadcrumbs__link" href="/SerialyTTY/"><svg viewBox="0 0 24 24" class="breadcrumbHomeIcon_YNFT"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" fill="currentColor"></path></svg></a></li><li class="breadcrumbs__item breadcrumbs__item--active"><span class="breadcrumbs__link">🔧 Hardware</span></li></ul></nav><div class="tocCollapsible_ETCw theme-doc-toc-mobile tocMobile_ITEo"><button type="button" class="clean-btn tocCollapsibleButton_TO0P">On this page</button></div><div class="theme-doc-markdown markdown"><header><h1>Hardware Guide</h1></header>
+<p>Complete hardware configuration and pin mapping for SerialyTTY.</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="esp32-c6-devkit">ESP32-C6 DevKit<a href="#esp32-c6-devkit" class="hash-link" aria-label="Direct link to ESP32-C6 DevKit" title="Direct link to ESP32-C6 DevKit" translate="no">​</a></h2>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="board-specifications">Board Specifications<a href="#board-specifications" class="hash-link" aria-label="Direct link to Board Specifications" title="Direct link to Board Specifications" translate="no">​</a></h3>
+<table><thead><tr><th>Specification</th><th>Value</th></tr></thead><tbody><tr><td><strong>MCU</strong></td><td>ESP32-C6-WROOM-1</td></tr><tr><td><strong>Architecture</strong></td><td>RISC-V 32-bit</td></tr><tr><td><strong>CPU Frequency</strong></td><td>160 MHz</td></tr><tr><td><strong>RAM</strong></td><td>320 KB SRAM</td></tr><tr><td><strong>Flash</strong></td><td>8 MB</td></tr><tr><td><strong>WiFi</strong></td><td>802.11 b/g/n (2.4 GHz)</td></tr><tr><td><strong>Bluetooth</strong></td><td>BLE 5.0</td></tr><tr><td><strong>USB</strong></td><td>USB 2.0 Full Speed (native)</td></tr><tr><td><strong>Operating Voltage</strong></td><td>3.3V</td></tr></tbody></table>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="power-requirements">Power Requirements<a href="#power-requirements" class="hash-link" aria-label="Direct link to Power Requirements" title="Direct link to Power Requirements" translate="no">​</a></h3>
+<ul>
+<li class=""><strong>Input Voltage</strong>: 5V via USB-C</li>
+<li class=""><strong>Operating Current</strong>: ~100mA (typical), up to 500mA with peripherals</li>
+<li class=""><strong>Deep Sleep</strong>: &lt;10µA (when implemented)</li>
+</ul>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="pin-configuration">Pin Configuration<a href="#pin-configuration" class="hash-link" aria-label="Direct link to Pin Configuration" title="Direct link to Pin Configuration" translate="no">​</a></h2>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="uart-bridge-primary-function">UART Bridge (Primary Function)<a href="#uart-bridge-primary-function" class="hash-link" aria-label="Direct link to UART Bridge (Primary Function)" title="Direct link to UART Bridge (Primary Function)" translate="no">​</a></h3>
+<table><thead><tr><th>Function</th><th>GPIO</th><th>Description</th></tr></thead><tbody><tr><td><strong>UART1_RX</strong></td><td>GPIO16</td><td>Receives data from target device</td></tr><tr><td><strong>UART1_TX</strong></td><td>GPIO17</td><td>Transmits data to target device</td></tr><tr><td><strong>UART0_RX</strong></td><td>GPIO20</td><td>USB Serial (console)</td></tr><tr><td><strong>UART0_TX</strong></td><td>GPIO21</td><td>USB Serial (console)</td></tr></tbody></table>
+<p><strong>UART Configuration:</strong></p>
+<ul>
+<li class="">Baud Rate: Auto-detected (9600-115200)</li>
+<li class="">Data Bits: 8</li>
+<li class="">Parity: None</li>
+<li class="">Stop Bits: 1</li>
+<li class="">Flow Control: None</li>
+</ul>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="tft-display-ili9341---optional">TFT Display (ILI9341) - Optional<a href="#tft-display-ili9341---optional" class="hash-link" aria-label="Direct link to TFT Display (ILI9341) - Optional" title="Direct link to TFT Display (ILI9341) - Optional" translate="no">​</a></h3>
+<table><thead><tr><th>Function</th><th>GPIO</th><th>Description</th></tr></thead><tbody><tr><td><strong>SPI_MOSI</strong></td><td>GPIO7</td><td>Master Out Slave In (shared)</td></tr><tr><td><strong>SPI_MISO</strong></td><td>GPIO2</td><td>Master In Slave Out (shared)</td></tr><tr><td><strong>SPI_SCLK</strong></td><td>GPIO6</td><td>SPI Clock (shared)</td></tr><tr><td><strong>TFT_CS</strong></td><td>GPIO10</td><td>Chip Select (Display)</td></tr><tr><td><strong>TFT_DC</strong></td><td>GPIO3</td><td>Data/Command</td></tr><tr><td><strong>TFT_RST</strong></td><td>GPIO4</td><td>Reset</td></tr><tr><td><strong>TFT_BL</strong></td><td>GPIO5</td><td>Backlight Control</td></tr></tbody></table>
+<p><strong>SPI Configuration:</strong></p>
+<ul>
+<li class="">Clock Speed: 40 MHz</li>
+<li class="">Mode: SPI Mode 0</li>
+<li class="">Bit Order: MSB First</li>
+<li class="">DMA: Channel 1 (enabled)</li>
+</ul>
+<p><strong>Display Specifications:</strong></p>
+<ul>
+<li class="">Resolution: 240x320 pixels</li>
+<li class="">Color Depth: RGB565 (16-bit)</li>
+<li class="">Interface: 4-wire SPI</li>
+<li class="">Operating Voltage: 3.3V</li>
+<li class="">Backlight: PWM controlled (future)</li>
+</ul>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="sd-card-module---optional">SD Card Module - Optional<a href="#sd-card-module---optional" class="hash-link" aria-label="Direct link to SD Card Module - Optional" title="Direct link to SD Card Module - Optional" translate="no">​</a></h3>
+<table><thead><tr><th>Function</th><th>GPIO</th><th>Description</th></tr></thead><tbody><tr><td><strong>SPI_MOSI</strong></td><td>GPIO7</td><td>Master Out Slave In (shared)</td></tr><tr><td><strong>SPI_MISO</strong></td><td>GPIO2</td><td>Master In Slave Out (shared)</td></tr><tr><td><strong>SPI_SCLK</strong></td><td>GPIO6</td><td>SPI Clock (shared)</td></tr><tr><td><strong>SD_CS</strong></td><td>GPIO1</td><td>Chip Select (SD Card)</td></tr></tbody></table>
+<p><strong>SPI Configuration:</strong></p>
+<ul>
+<li class="">Clock Speed: 20 MHz (default), up to 40 MHz</li>
+<li class="">Mode: SPI Mode 0</li>
+<li class="">Filesystem: FAT16/FAT32</li>
+<li class="">Voltage: 3.3V (ensure card is 3.3V compatible!)</li>
+</ul>
+<p><strong>SD Card Requirements:</strong></p>
+<ul>
+<li class="">Type: microSD or SD (with adapter)</li>
+<li class="">Format: FAT32 (recommended)</li>
+<li class="">Capacity: Up to 32GB tested</li>
+<li class="">Speed Class: Class 4 or higher</li>
+</ul>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="i2c-bus-reserved">I2C Bus (Reserved)<a href="#i2c-bus-reserved" class="hash-link" aria-label="Direct link to I2C Bus (Reserved)" title="Direct link to I2C Bus (Reserved)" translate="no">​</a></h3>
+<table><thead><tr><th>Function</th><th>GPIO</th><th>Description</th></tr></thead><tbody><tr><td><strong>I2C_SDA</strong></td><td>GPIO8</td><td>I2C Data (future expansion)</td></tr><tr><td><strong>I2C_SCL</strong></td><td>GPIO9</td><td>I2C Clock (future expansion)</td></tr></tbody></table>
+<p><strong>I2C Configuration:</strong></p>
+<ul>
+<li class="">Speed: 100 kHz (standard mode)</li>
+<li class="">Address Range: 0x08-0x77</li>
+<li class="">Pull-ups: 4.7kΩ external required</li>
+</ul>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="available-gpio-pins">Available GPIO Pins<a href="#available-gpio-pins" class="hash-link" aria-label="Direct link to Available GPIO Pins" title="Direct link to Available GPIO Pins" translate="no">​</a></h3>
+<p>Reserved for future expansion:</p>
+<table><thead><tr><th>GPIO</th><th>Current Use</th><th>Notes</th></tr></thead><tbody><tr><td>GPIO0</td><td>Free</td><td>Boot mode control (avoid external pull-down)</td></tr><tr><td>GPIO11</td><td>Free</td><td>General purpose</td></tr><tr><td>GPIO12</td><td>Free</td><td>General purpose</td></tr><tr><td>GPIO13</td><td>Free</td><td>General purpose</td></tr><tr><td>GPIO18</td><td>Free</td><td>General purpose</td></tr><tr><td>GPIO19</td><td>Free</td><td>General purpose</td></tr><tr><td>GPIO22</td><td>Free</td><td>General purpose</td></tr><tr><td>GPIO23</td><td>Free</td><td>General purpose</td></tr></tbody></table>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="wiring-diagrams">Wiring Diagrams<a href="#wiring-diagrams" class="hash-link" aria-label="Direct link to Wiring Diagrams" title="Direct link to Wiring Diagrams" translate="no">​</a></h2>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="minimal-configuration-uart-only">Minimal Configuration (UART Only)<a href="#minimal-configuration-uart-only" class="hash-link" aria-label="Direct link to Minimal Configuration (UART Only)" title="Direct link to Minimal Configuration (UART Only)" translate="no">​</a></h3>
+<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">ESP32-C6                Target Device</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">┌─────────┐            ┌─────────┐</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">│         │            │         │</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">│  GPIO16 │◄───────────│   TX    │</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">│  (RX)   │            │         │</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">│         │            │         │</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">│  GPIO17 │────────────►   RX    │</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">│  (TX)   │            │         │</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">│         │            │         │</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">│   GND   │────────────│   GND   │</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">│         │            │         │</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">└─────────┘            └─────────┘</span><br></span></code></pre></div></div>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="full-configuration-with-display-and-sd">Full Configuration (with Display and SD)<a href="#full-configuration-with-display-and-sd" class="hash-link" aria-label="Direct link to Full Configuration (with Display and SD)" title="Direct link to Full Configuration (with Display and SD)" translate="no">​</a></h3>
+<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">                  ┌─────────────────┐</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">                  │   ESP32-C6      │</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">                  │                 │</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    ILI9341       │  GPIO7 (MOSI)   │──┬── SD Card MOSI</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    MOSI ─────────│  GPIO2 (MISO)   │──┤</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    MISO ─────────│  GPIO6 (SCLK)   │──┴── SD Card SCLK/MISO</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    SCLK ─────────│  GPIO10 (CS)    │</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    CS   ─────────│  GPIO3  (DC)    │      SD Card</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    DC   ─────────│  GPIO4  (RST)   │      CS ────── GPIO1</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    RST  ─────────│  GPIO5  (BL)    │</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    BL   ─────────│                 │</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">                  │  GPIO16 (RX)    │──── Target TX</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">                  │  GPIO17 (TX)    │──── Target RX</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">                  │                 │</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">                  │   GND           │──── Common Ground</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">                  │   3.3V          │──── Power peripherals</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">                  └─────────────────┘</span><br></span></code></pre></div></div>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="hardware-setup-instructions">Hardware Setup Instructions<a href="#hardware-setup-instructions" class="hash-link" aria-label="Direct link to Hardware Setup Instructions" title="Direct link to Hardware Setup Instructions" translate="no">​</a></h2>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="step-1-esp32-c6-preparation">Step 1: ESP32-C6 Preparation<a href="#step-1-esp32-c6-preparation" class="hash-link" aria-label="Direct link to Step 1: ESP32-C6 Preparation" title="Direct link to Step 1: ESP32-C6 Preparation" translate="no">​</a></h3>
+<ol>
+<li class="">Inspect the board for physical damage</li>
+<li class="">Verify all GPIO pins are accessible</li>
+<li class="">Connect USB-C cable to computer</li>
+<li class="">Confirm device enumeration (check device manager/dmesg)</li>
+</ol>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="step-2-tft-display-connection-optional">Step 2: TFT Display Connection (Optional)<a href="#step-2-tft-display-connection-optional" class="hash-link" aria-label="Direct link to Step 2: TFT Display Connection (Optional)" title="Direct link to Step 2: TFT Display Connection (Optional)" translate="no">​</a></h3>
+<ol>
+<li class=""><strong>Verify display voltage</strong>: Must be 3.3V compatible</li>
+<li class=""><strong>Connect power first</strong>: VCC to 3.3V, GND to GND</li>
+<li class=""><strong>Connect SPI bus</strong>: MOSI, MISO, SCLK (shared with SD)</li>
+<li class=""><strong>Connect control pins</strong>: CS, DC, RST, BL</li>
+</ol>
+<p><strong>Important:</strong></p>
+<ul>
+<li class="">Use short, twisted-pair wires for SPI signals</li>
+<li class="">Keep SPI traces under 10cm if possible</li>
+<li class="">Add 0.1µF decoupling capacitor near display VCC</li>
+</ul>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="step-3-sd-card-connection-optional">Step 3: SD Card Connection (Optional)<a href="#step-3-sd-card-connection-optional" class="hash-link" aria-label="Direct link to Step 3: SD Card Connection (Optional)" title="Direct link to Step 3: SD Card Connection (Optional)" translate="no">​</a></h3>
+<ol>
+<li class=""><strong>Format SD card</strong>: FAT32 using computer</li>
+<li class=""><strong>Verify voltage</strong>: Use 3.3V compatible module only</li>
+<li class=""><strong>Connect SPI bus</strong>: Share MOSI, MISO, SCLK with display</li>
+<li class=""><strong>Connect CS</strong>: GPIO1 (different from display CS)</li>
+</ol>
+<p><strong>Important:</strong></p>
+<ul>
+<li class="">Many SD modules have built-in level shifters - check specs</li>
+<li class="">Ensure separate chip select (CS) pins</li>
+<li class="">Test SD card reads/writes on computer first</li>
+</ul>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="step-4-target-device-connection">Step 4: Target Device Connection<a href="#step-4-target-device-connection" class="hash-link" aria-label="Direct link to Step 4: Target Device Connection" title="Direct link to Step 4: Target Device Connection" translate="no">​</a></h3>
+<ol>
+<li class="">Identify target UART pins (TX, RX, GND)</li>
+<li class=""><strong>Cross-connect</strong>: Target TX → ESP32 RX (GPIO16)</li>
+<li class=""><strong>Cross-connect</strong>: Target RX → ESP32 TX (GPIO17)</li>
+<li class=""><strong>Common ground</strong>: Connect GND pins</li>
+</ol>
+<p><strong>Warning:</strong> Ensure voltage levels match (3.3V). Use level shifters for 5V devices.</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="signal-quality-considerations">Signal Quality Considerations<a href="#signal-quality-considerations" class="hash-link" aria-label="Direct link to Signal Quality Considerations" title="Direct link to Signal Quality Considerations" translate="no">​</a></h2>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="spi-bus-sharing">SPI Bus Sharing<a href="#spi-bus-sharing" class="hash-link" aria-label="Direct link to SPI Bus Sharing" title="Direct link to SPI Bus Sharing" translate="no">​</a></h3>
+<p>The display and SD card share the SPI bus (MOSI, MISO, SCLK) but have separate chip select (CS) pins:</p>
+<ul>
+<li class=""><strong>Display CS</strong>: GPIO10</li>
+<li class=""><strong>SD Card CS</strong>: GPIO1</li>
+</ul>
+<p><strong>Best Practices:</strong></p>
+<ul>
+<li class="">Only one device active at a time (enforced in software)</li>
+<li class="">Use pull-up resistors on CS lines (10kΩ recommended)</li>
+<li class="">Minimize capacitive loading with short wires</li>
+</ul>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="uart-signal-integrity">UART Signal Integrity<a href="#uart-signal-integrity" class="hash-link" aria-label="Direct link to UART Signal Integrity" title="Direct link to UART Signal Integrity" translate="no">​</a></h3>
+<p>For reliable baud detection:</p>
+<ul>
+<li class="">Use twisted-pair or shielded cable for long runs</li>
+<li class="">Keep UART traces away from SPI clock</li>
+<li class="">Add series termination (22-47Ω) for high speeds</li>
+<li class="">Avoid running UART parallel to power lines</li>
+</ul>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="power-distribution">Power Distribution<a href="#power-distribution" class="hash-link" aria-label="Direct link to Power Distribution" title="Direct link to Power Distribution" translate="no">​</a></h3>
+<ul>
+<li class="">Add bulk capacitor (100µF) near ESP32-C6 power input</li>
+<li class="">Add ceramic capacitor (0.1µF) near each peripheral</li>
+<li class="">Keep power traces wide (&gt;20 mil) and short</li>
+<li class="">Monitor voltage drop - should stay within ±5%</li>
+</ul>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="testing-hardware-connections">Testing Hardware Connections<a href="#testing-hardware-connections" class="hash-link" aria-label="Direct link to Testing Hardware Connections" title="Direct link to Testing Hardware Connections" translate="no">​</a></h2>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="visual-inspection-checklist">Visual Inspection Checklist<a href="#visual-inspection-checklist" class="hash-link" aria-label="Direct link to Visual Inspection Checklist" title="Direct link to Visual Inspection Checklist" translate="no">​</a></h3>
+<ul class="contains-task-list containsTaskList_mC6p">
+<li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->All connections secure and properly seated</li>
+<li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->No short circuits between adjacent pins</li>
+<li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Polarity correct (VCC, GND)</li>
+<li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Signal lines match pin configuration</li>
+</ul>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="power-on-test">Power-On Test<a href="#power-on-test" class="hash-link" aria-label="Direct link to Power-On Test" title="Direct link to Power-On Test" translate="no">​</a></h3>
+<ol>
+<li class="">Connect USB cable (no peripherals)</li>
+<li class="">Verify green LED on ESP32-C6 board</li>
+<li class="">Check device appears in serial port list</li>
+<li class="">Measure 3.3V between VCC and GND pins</li>
+</ol>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="peripheral-test">Peripheral Test<a href="#peripheral-test" class="hash-link" aria-label="Direct link to Peripheral Test" title="Direct link to Peripheral Test" translate="no">​</a></h3>
+<ol>
+<li class=""><strong>Display</strong>: Should show boot screen on power-up (if enabled)</li>
+<li class=""><strong>SD Card</strong>: Check for mount success message in serial log</li>
+<li class=""><strong>UART</strong>: Loopback test - connect GPIO16 to GPIO17, verify echo</li>
+</ol>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="troubleshooting-hardware-issues">Troubleshooting Hardware Issues<a href="#troubleshooting-hardware-issues" class="hash-link" aria-label="Direct link to Troubleshooting Hardware Issues" title="Direct link to Troubleshooting Hardware Issues" translate="no">​</a></h2>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="display-issues">Display Issues<a href="#display-issues" class="hash-link" aria-label="Direct link to Display Issues" title="Direct link to Display Issues" translate="no">​</a></h3>
+<table><thead><tr><th>Symptom</th><th>Possible Cause</th><th>Solution</th></tr></thead><tbody><tr><td>Blank/white screen</td><td>Power issue</td><td>Check VCC/GND, measure voltage</td></tr><tr><td>Garbled display</td><td>SPI timing</td><td>Reduce SPI clock speed</td></tr><tr><td>No response</td><td>CS/DC/RST wrong</td><td>Verify pin connections</td></tr><tr><td>Dim display</td><td>Backlight off</td><td>Check BL pin (GPIO5)</td></tr></tbody></table>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="sd-card-issues">SD Card Issues<a href="#sd-card-issues" class="hash-link" aria-label="Direct link to SD Card Issues" title="Direct link to SD Card Issues" translate="no">​</a></h3>
+<table><thead><tr><th>Symptom</th><th>Possible Cause</th><th>Solution</th></tr></thead><tbody><tr><td>Mount fails</td><td>Format incompatible</td><td>Reformat as FAT32</td></tr><tr><td>Read errors</td><td>Bad card</td><td>Try different SD card</td></tr><tr><td>No detection</td><td>CS not working</td><td>Verify GPIO1 connection</td></tr><tr><td>Slow performance</td><td>Low speed card</td><td>Use Class 10 card</td></tr></tbody></table>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="uart-issues">UART Issues<a href="#uart-issues" class="hash-link" aria-label="Direct link to UART Issues" title="Direct link to UART Issues" translate="no">​</a></h3>
+<table><thead><tr><th>Symptom</th><th>Possible Cause</th><th>Solution</th></tr></thead><tbody><tr><td>No data received</td><td>TX/RX swapped</td><td>Cross-check connections</td></tr><tr><td>Corrupted data</td><td>Baud mismatch</td><td>Run auto-detection</td></tr><tr><td>Intermittent errors</td><td>Signal quality</td><td>Shorten cables, add pull-ups</td></tr><tr><td>No communication</td><td>Voltage mismatch</td><td>Check 3.3V/5V levels</td></tr></tbody></table>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="pcb-design-guidelines-future">PCB Design Guidelines (Future)<a href="#pcb-design-guidelines-future" class="hash-link" aria-label="Direct link to PCB Design Guidelines (Future)" title="Direct link to PCB Design Guidelines (Future)" translate="no">​</a></h2>
+<p>For custom PCB integration:</p>
+<ol>
+<li class=""><strong>Layer Stack</strong>: Minimum 2-layer, 4-layer recommended</li>
+<li class=""><strong>SPI Routing</strong>: Match length within 10mm, 50Ω impedance</li>
+<li class=""><strong>UART Routing</strong>: Differential pairs if possible, 90Ω impedance</li>
+<li class=""><strong>Ground Plane</strong>: Solid ground pour on bottom layer</li>
+<li class=""><strong>Decoupling</strong>: 0.1µF ceramic caps within 5mm of ICs</li>
+<li class=""><strong>Test Points</strong>: Add TP on all critical signals</li>
+</ol>
+<hr>
+<p><strong>Next:</strong> Learn about <a class="" href="/SerialyTTY/en/features/">Features</a> and system capabilities.</p></div></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/SerialyTTY/en/getting-started/"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">🚀 Getting Started</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/SerialyTTY/en/features/"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">⚡ Features</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#esp32-c6-devkit" class="table-of-contents__link toc-highlight">ESP32-C6 DevKit</a><ul><li><a href="#board-specifications" class="table-of-contents__link toc-highlight">Board Specifications</a></li><li><a href="#power-requirements" class="table-of-contents__link toc-highlight">Power Requirements</a></li></ul></li><li><a href="#pin-configuration" class="table-of-contents__link toc-highlight">Pin Configuration</a><ul><li><a href="#uart-bridge-primary-function" class="table-of-contents__link toc-highlight">UART Bridge (Primary Function)</a></li><li><a href="#tft-display-ili9341---optional" class="table-of-contents__link toc-highlight">TFT Display (ILI9341) - Optional</a></li><li><a href="#sd-card-module---optional" class="table-of-contents__link toc-highlight">SD Card Module - Optional</a></li><li><a href="#i2c-bus-reserved" class="table-of-contents__link toc-highlight">I2C Bus (Reserved)</a></li><li><a href="#available-gpio-pins" class="table-of-contents__link toc-highlight">Available GPIO Pins</a></li></ul></li><li><a href="#wiring-diagrams" class="table-of-contents__link toc-highlight">Wiring Diagrams</a><ul><li><a href="#minimal-configuration-uart-only" class="table-of-contents__link toc-highlight">Minimal Configuration (UART Only)</a></li><li><a href="#full-configuration-with-display-and-sd" class="table-of-contents__link toc-highlight">Full Configuration (with Display and SD)</a></li></ul></li><li><a href="#hardware-setup-instructions" class="table-of-contents__link toc-highlight">Hardware Setup Instructions</a><ul><li><a href="#step-1-esp32-c6-preparation" class="table-of-contents__link toc-highlight">Step 1: ESP32-C6 Preparation</a></li><li><a href="#step-2-tft-display-connection-optional" class="table-of-contents__link toc-highlight">Step 2: TFT Display Connection (Optional)</a></li><li><a href="#step-3-sd-card-connection-optional" class="table-of-contents__link toc-highlight">Step 3: SD Card Connection (Optional)</a></li><li><a href="#step-4-target-device-connection" class="table-of-contents__link toc-highlight">Step 4: Target Device Connection</a></li></ul></li><li><a href="#signal-quality-considerations" class="table-of-contents__link toc-highlight">Signal Quality Considerations</a><ul><li><a href="#spi-bus-sharing" class="table-of-contents__link toc-highlight">SPI Bus Sharing</a></li><li><a href="#uart-signal-integrity" class="table-of-contents__link toc-highlight">UART Signal Integrity</a></li><li><a href="#power-distribution" class="table-of-contents__link toc-highlight">Power Distribution</a></li></ul></li><li><a href="#testing-hardware-connections" class="table-of-contents__link toc-highlight">Testing Hardware Connections</a><ul><li><a href="#visual-inspection-checklist" class="table-of-contents__link toc-highlight">Visual Inspection Checklist</a></li><li><a href="#power-on-test" class="table-of-contents__link toc-highlight">Power-On Test</a></li><li><a href="#peripheral-test" class="table-of-contents__link toc-highlight">Peripheral Test</a></li></ul></li><li><a href="#troubleshooting-hardware-issues" class="table-of-contents__link toc-highlight">Troubleshooting Hardware Issues</a><ul><li><a href="#display-issues" class="table-of-contents__link toc-highlight">Display Issues</a></li><li><a href="#sd-card-issues" class="table-of-contents__link toc-highlight">SD Card Issues</a></li><li><a href="#uart-issues" class="table-of-contents__link toc-highlight">UART Issues</a></li></ul></li><li><a href="#pcb-design-guidelines-future" class="table-of-contents__link toc-highlight">PCB Design Guidelines (Future)</a></li></ul></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer footer--dark"><div class="container container-fluid"><div class="footer__bottom text--center"><div class="footer__copyright">
+  <div style="text-align:center;">
+    © 2025 SerialyTTY Project<br>
+    🔖 Version: <strong>v1.0</strong><br>
+    💡 Commit: <code>local</code><br>
+    🕒 Build: <br>
+    Built with ESP32-C6 and ❤️
+  </div>
+</div></div></div></footer></div>
+</body>
+</html>
