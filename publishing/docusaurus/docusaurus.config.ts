@@ -2,27 +2,27 @@ import type {Config} from '@docusaurus/types';
 import {themes as prismThemes} from 'prism-react-renderer';
 
 const {
-  RELEASE_TAG = 'v1.0',
+  RELEASE_TAG = 'dev',
   COMMIT_SHA = 'local',
   BUILD_DATE = '',
-  GITHUB_REPO_URL = 'https://github.com/thenisvan/SerialyTTY',
-  SITE_URL = 'https://thenisvan.github.io',
-  BASE_URL = '/SerialyTTY/',
+  GITHUB_REPO_URL = '',
+  SITE_URL = 'https://knife-framework.github.io',
+  BASE_URL = '/knifes_overview/',
 } = process.env;
 
 const commitLink =
   GITHUB_REPO_URL && COMMIT_SHA ? `${GITHUB_REPO_URL}/commit/${COMMIT_SHA}` : '';
 
 const config: Config = {
-  title: 'SerialyTTY Documentation',
+  title: 'KNIFE Overview',
   url: SITE_URL,
   baseUrl: BASE_URL,
   deploymentBranch: 'gh-pages',
   favicon: 'img/favicon.ico',
 
   i18n: {
-    defaultLocale: 'en',
-    locales: ['en'],
+    defaultLocale: 'sk',
+    locales: ['sk', 'en'],
   },
 
   presets: [
@@ -32,9 +32,14 @@ const config: Config = {
         docs: {
           path: 'docs',
           routeBasePath: '/',
-          sidebarPath: require.resolve('./sidebars-serialytty.ts'),
+          sidebarPath: require.resolve('./sidebars.ts'),
           includeCurrentVersion: true,
           editCurrentVersion: false,
+          // zobrazíme konkrétny dokument ako homepage, aby sa hneď ukázal sidebar
+          //homePageId: 'sk/index',
+          // aktivujeme tag stránky pre dokumentáciu a presunieme ich z default /tags na /doc-tags,
+          // aby nebol konflikt s blogom (ak by sa neskôr zapol)
+          // dočasne vypínam pre warning v builde 21.11.2025,//tagsBasePath: 'doc-tags',
         },
         // Blog nepoužívame – vypneme, aby nevznikal duplicitný /tags
         blog: false,
@@ -49,32 +54,26 @@ const config: Config = {
   themeConfig: {
     docs: {
       sidebar: {
-        hideable: true,
-        autoCollapseCategories: false,
+        hideable: true,              // umožní používateľovi zložiť/rozbaliť sidebar
+        autoCollapseCategories: false, // nechávame sekcie otvorené (Home uvidí celý strom)
       },
     },
     navbar: {
-      title: 'SerialyTTY',
+      title: 'KNIFE Overview',
       logo: {
-        alt: 'SerialyTTY',
+        alt: 'KNIFE',
         src: 'img/logo.png',
         srcDark: 'img/logo-dark.png',
-        target: '_self',
-        href: '/',
+        target: '_self', // alebo '_blank' ak chceš nové okno
+        href: '/', // ← sem vložíš svoj cieľový link
       },
       items: [
-        { to: '/en/getting-started', label: 'Getting Started', position: 'left' },
-        { to: '/en/hardware', label: 'Hardware', position: 'left' },
-        { to: '/en/features', label: 'Features', position: 'left' },
-        { to: '/en/7ds', label: '7 Dimensions', position: 'left' },
-        {
-          href: GITHUB_REPO_URL || 'https://github.com/thenisvan/SerialyTTY',
-          label: 'GitHub',
-          position: 'right',
-        },
+        { type: 'localeDropdown', position: 'left' },
+        { to: '/sk/about', label: 'About', position: 'right' },
+        { to: '/sk/help',  label: 'Help',  position: 'right' },
         {
           href: commitLink || '#',
-          label: `${RELEASE_TAG} • ${COMMIT_SHA}`,
+          label: `Release ${RELEASE_TAG} • ${COMMIT_SHA}`,
           position: 'right',
         },
       ],
@@ -95,11 +94,10 @@ const config: Config = {
       style: 'dark',
       copyright: `
   <div style="text-align:center;">
-    © ${new Date().getFullYear()} SerialyTTY Project<br/>
-    🔖 Version: <strong>${RELEASE_TAG}</strong><br/>
+    © ${new Date().getFullYear()} SystemThinking<br/>
+    🔖 Release: <strong>${RELEASE_TAG}</strong><br/>
     💡 Commit: <code>${COMMIT_SHA}</code><br/>
-    🕒 Build: ${BUILD_DATE}<br/>
-    Built with ESP32-C6 and ❤️
+    🕒 Build: ${BUILD_DATE}
   </div>
 `,
     },
@@ -107,7 +105,6 @@ const config: Config = {
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
-      additionalLanguages: ['bash', 'cpp', 'ini', 'makefile'],
     },
   },
 

@@ -21,3 +21,8 @@ venv/
 # Snyk Security Extension - AI Rules (auto-generated)
 .github/instructions/snyk_rules.instructions.md
 .temp_smvit_template/
+
+# Docusaurus
+publishing/docusaurus/node_modules/
+publishing/docusaurus/.docusaurus/
+publishing/docusaurus/build/
