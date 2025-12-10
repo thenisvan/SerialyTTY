@@ -21,9 +21,15 @@ enum MenuScreen {
 // Menu navigation history stack
 #define MAX_MENU_HISTORY 10
 
+// Forward declaration
+class BluetoothManager;
+
 class MenuSystem {
 public:
     MenuSystem();
+    
+    // Set Bluetooth manager reference (must be called before using BT features)
+    void setBluetoothManager(BluetoothManager* bt) { bluetoothMgr = bt; }
     
     // Menu control
     void show();
@@ -60,6 +66,7 @@ public:
     // Get user choice
     char getLastCommand() const { return lastCommand; }
     void clearCommand() { lastCommand = 0; }
+    bool isEditingMode() const { return editingMode; }
 
 private:
     MenuScreen currentScreen;
@@ -79,6 +86,9 @@ private:
     bool hasDisplay;
     bool hasSD;
     bool hasAccel;
+    
+    // Reference to Bluetooth manager for runtime control
+    BluetoothManager* bluetoothMgr;
     
     // Helper methods
     void printLine(const char* line);

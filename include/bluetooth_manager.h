@@ -4,14 +4,11 @@
 #include "config.h"
 #include <string>
 #include "esp_log.h"
-
-// Forward declarations for BLE types (to be implemented later when BLE is properly configured)
-typedef int esp_gatts_cb_event_t;
-typedef int esp_gatt_if_t;
-typedef struct esp_ble_gatts_cb_param {} esp_ble_gatts_cb_param_t;
-typedef int esp_gap_ble_cb_event_t;
-typedef struct esp_ble_gap_cb_param {} esp_ble_gap_cb_param_t;
-typedef struct esp_ble_adv_params {} esp_ble_adv_params_t;
+#include "esp_bt.h"
+#include "esp_bt_main.h"
+#include "esp_gap_ble_api.h"
+#include "esp_gatts_api.h"
+#include "esp_gatt_common_api.h"
 
 // BLE connection status (ESP32-C6 supports BLE only, not Classic)
 enum BluetoothStatus {
@@ -80,9 +77,33 @@ private:
     uint16_t service_handle;
     uint16_t char_tx_handle;
     uint16_t char_rx_handle;
+    uint16_t descr_handle;
     
     // Advertising parameters
     esp_ble_adv_params_t adv_params;
+    
+    // Nordic UART Service UUID (128-bit)
+    static constexpr uint8_t SERVICE_UUID[16] = {
+        0x9E, 0xCA, 0xDC, 0x24, 0x0E, 0xE5, 0xA9, 0xE0,
+        0x93, 0xF3, 0xA3, 0xB5, 0x01, 0x00, 0x40, 0x6E
+    };
+    
+    // RX Characteristic UUID (Write from client)
+    static constexpr uint8_t CHAR_RX_UUID[16] = {
+        0x9E, 0xCA, 0xDC, 0x24, 0x0E, 0xE5, 0xA9, 0xE0,
+        0x93, 0xF3, 0xA3, 0xB5, 0x02, 0x00, 0x40, 0x6E
+    };
+    
+    // TX Characteristic UUID (Notify to client)
+    static constexpr uint8_t CHAR_TX_UUID[16] = {
+        0x9E, 0xCA, 0xDC, 0x24, 0x0E, 0xE5, 0xA9, 0xE0,
+        0x93, 0xF3, 0xA3, 0xB5, 0x03, 0x00, 0x40, 0x6E
+    };
+    
+    // RX buffer for incoming data
+    static constexpr size_t RX_BUFFER_SIZE = 512;
+    uint8_t rxBuffer[RX_BUFFER_SIZE];
+    size_t rxBufferLen;
 };
 
 #endif // BLUETOOTH_MANAGER_H

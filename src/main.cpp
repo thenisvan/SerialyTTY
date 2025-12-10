@@ -141,6 +141,9 @@ void setup_hardware() {
                             hwConfig.sdCardPresent, 
                             hwConfig.accelerometerPresent);
     
+    // Link Bluetooth manager to menu system for runtime control
+    menu.setBluetoothManager(&bluetooth);
+    
     // Link display and logger to bridge mode
     bridge.setDisplay(&display);
     bridge.setLogger(&logger);
@@ -458,9 +461,9 @@ void handleMenuState() {
         // Handle the input
         menu.handleInput((char)c);
         
-        // Check for commands that change state
+        // Check for commands that change state (only if not editing)
         char cmd = menu.getLastCommand();
-        if (cmd != 0) {
+        if (cmd != 0 && !menu.isEditingMode()) {
             switch (cmd) {
                 case 'D':  // Detect baud rate
                     ESP_LOGI(TAG, "Starting baud detection...");

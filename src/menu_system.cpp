@@ -1,5 +1,6 @@
 #include "menu_system.h"
 #include "config_manager.h"
+#include "bluetooth_manager.h"
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -30,7 +31,8 @@ MenuSystem::MenuSystem() :
     bytesTx(0),
     hasDisplay(false),
     hasSD(false),
-    hasAccel(false)
+    hasAccel(false),
+    bluetoothMgr(nullptr)
 {
     memset(menuHistory, 0, sizeof(menuHistory));
     memset(inputBuffer, 0, sizeof(inputBuffer));
@@ -685,10 +687,35 @@ void MenuSystem::update() {
 void MenuSystem::handleBluetoothToggle() {
     ConfigManager& cfg = ConfigManager::getInstance();
     bool current = cfg.getConfig().bluetooth.enabled;
-    cfg.setBluetoothEnabled(!current);
-    printLine(current ? ANSI_YELLOW "\n✓ Bluetooth disabled\n" ANSI_RESET : 
-                       ANSI_GREEN "\n✓ Bluetooth enabled\n" ANSI_RESET);
-    vTaskDelay(pdMS_TO_TICKS(1000));
+    bool newState = !current;
+    
+    cfg.setBluetoothEnabled(newState);
+    
+    if (bluetoothMgr) {
+        if (newState) {
+            // Enable Bluetooth
+            printLine(ANSI_YELLOW "\nStarting Bluetooth..." ANSI_RESET);
+            if (bluetoothMgr->begin(cfg.getConfig().bluetooth.deviceName)) {
+                if (cfg.getConfig().bluetooth.autoAdvertise) {
+                    bluetoothMgr->startAdvertising();
+                }
+                printLine(ANSI_GREEN "✓ Bluetooth enabled and advertising\n" ANSI_RESET);
+            } else {
+                printLine(ANSI_RED "✗ Failed to start Bluetooth\n" ANSI_RESET);
+                cfg.setBluetoothEnabled(false);
+            }
+        } else {
+            // Disable Bluetooth
+            printLine(ANSI_YELLOW "\nStopping Bluetooth..." ANSI_RESET);
+            bluetoothMgr->end();
+            printLine(ANSI_GREEN "✓ Bluetooth disabled\n" ANSI_RESET);
+        }
+    } else {
+        printLine(current ? ANSI_YELLOW "\n✓ Bluetooth disabled (restart required)\n" ANSI_RESET : 
+                           ANSI_GREEN "\n✓ Bluetooth enabled (restart required)\n" ANSI_RESET);
+    }
+    
+    vTaskDelay(pdMS_TO_TICKS(1500));
 }
 
 void MenuSystem::handleBluetoothNameEdit() {
@@ -701,9 +728,25 @@ void MenuSystem::handleBluetoothNameEdit() {
 void MenuSystem::handleBluetoothAutoAdvertiseToggle() {
     ConfigManager& cfg = ConfigManager::getInstance();
     bool current = cfg.getConfig().bluetooth.autoAdvertise;
-    cfg.setBluetoothAutoAdvertise(!current);
-    printLine(current ? ANSI_YELLOW "\n✓ Auto-advertise disabled\n" ANSI_RESET :
-                       ANSI_GREEN "\n✓ Auto-advertise enabled\n" ANSI_RESET);
+    bool newState = !current;
+    
+    cfg.setBluetoothAutoAdvertise(newState);
+    
+    if (bluetoothMgr && cfg.getConfig().bluetooth.enabled) {
+        if (newState) {
+            // Start advertising
+            bluetoothMgr->startAdvertising();
+            printLine(ANSI_GREEN "\n✓ Auto-advertise enabled and started\n" ANSI_RESET);
+        } else {
+            // Stop advertising
+            bluetoothMgr->stopAdvertising();
+            printLine(ANSI_YELLOW "\n✓ Auto-advertise disabled\n" ANSI_RESET);
+        }
+    } else {
+        printLine(newState ? ANSI_GREEN "\n✓ Auto-advertise enabled\n" ANSI_RESET :
+                            ANSI_YELLOW "\n✓ Auto-advertise disabled\n" ANSI_RESET);
+    }
+    
     vTaskDelay(pdMS_TO_TICKS(1000));
 }
 
