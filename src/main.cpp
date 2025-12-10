@@ -10,6 +10,7 @@
 #include "driver/gpio.h"
 #include "driver/uart.h"
 #include "config.h"
+#include "config_manager.h"
 #include "display_manager.h"
 #include "baud_detector.h"
 #include "sd_logger.h"
@@ -22,6 +23,7 @@
 static const char *TAG = "MAIN";
 
 // Global objects
+ConfigManager& configMgr = ConfigManager::getInstance();
 HardwareDetector hwDetector;
 DisplayManager display;
 SDLogger logger;
@@ -58,13 +60,33 @@ static uint32_t millis() {
 void setup_hardware() {
     ESP_LOGI(TAG, "\n\n=== USB-TTL SNIFFER STARTING ===");
     
-    // Install UART driver for console input (UART_NUM_0)
-    // This allows us to read user input via uart_read_bytes()
-    uart_driver_install(UART_NUM_0, 256, 0, 0, NULL, 0);
+    // Initialize Configuration Manager
+    ESP_LOGI(TAG, "Initializing Configuration Manager...");
+    if (!configMgr.begin()) {
+        ESP_LOGE(TAG, "Failed to initialize Configuration Manager!");
+    } else {
+        const DeviceConfig& config = configMgr.getConfig();
+        ESP_LOGI(TAG, "Device Name: %s", config.system.deviceName);
+        ESP_LOGI(TAG, "UART Baud: %lu, Auto-detect: %s", 
+                 (unsigned long)config.uart.baudRate,
+                 config.uart.autoDetect ? "ON" : "OFF");
+    // Initialize display based on configuration
+    const DeviceConfig& config = configMgr.getConfig();
+    bool displayPresent = false;
     
-    ESP_LOGI(TAG, "Console UART driver installed");
-    
-    // Detect hardware modules
+    if (config.display.enabled) {
+        displayPresent = display.begin();
+        if (!displayPresent) {
+            ESP_LOGW(TAG, "Display not detected — continuing without display.");
+        }
+        if (displayPresent) {
+            display.setState(STATE_BOOTING);
+            display.setStatus("Initializing components...");
+            display.update();
+        }
+    } else {
+        ESP_LOGI(TAG, "Display disabled in configuration");
+    }/ Detect hardware modules
     ESP_LOGI(TAG, "Scanning for hardware modules...");
     HardwareConfig hwConfig = hwDetector.scanAll();
     
@@ -90,14 +112,20 @@ void setup_hardware() {
     vTaskDelay(pdMS_TO_TICKS(500));
     
     // Initialize SD card
-    if (logger.begin()) {
-        if (displayPresent) display.setStatus("SD card OK");
-    } else {
-        if (displayPresent) display.setStatus("SD card FAILED");
-    }
-    if (displayPresent) display.update();
-    
     vTaskDelay(pdMS_TO_TICKS(500));
+    
+    // Initialize Bluetooth with configured name
+    if (config.bluetooth.enabled) {
+        bluetooth.begin(config.bluetooth.deviceName);
+        ESP_LOGI(TAG, "Bluetooth enabled: %s", config.bluetooth.deviceName);
+    } else {
+        ESP_LOGI(TAG, "Bluetooth disabled in configuration");
+    }
+    
+    if (displayPresent) {
+        display.setStatus("Ready");
+        display.update();
+    }TaskDelay(pdMS_TO_TICKS(500));
     
     // Log startup
     logger.log("System boot");
