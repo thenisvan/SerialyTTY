@@ -541,59 +541,121 @@ void MenuSystem::handleInput(char c) {
     // Convert to uppercase for case-insensitive matching
     char cmd = (c >= 'a' && c <= 'z') ? (c - 32) : c;
     
+    bool needRedraw = false;
+    
     switch (currentScreen) {
         case MENU_MAIN:
-            if (cmd == 'S') navigateTo(MENU_SETTINGS);
-            else if (cmd == 'I') navigateTo(MENU_STATS);
-            else if (cmd == 'H') navigateTo(MENU_HARDWARE);
-            else if (cmd == '?') navigateTo(MENU_HELP);
+            if (cmd == 'S') {
+                navigateTo(MENU_SETTINGS);
+                needRedraw = true;
+            }
+            else if (cmd == 'I') {
+                navigateTo(MENU_STATS);
+                needRedraw = true;
+            }
+            else if (cmd == 'H') {
+                navigateTo(MENU_HARDWARE);
+                needRedraw = true;
+            }
+            else if (cmd == '?') {
+                navigateTo(MENU_HELP);
+                needRedraw = true;
+            }
             // B, D, R handled by main.cpp
             break;
             
         case MENU_SETTINGS:
-            if (cmd == '1') navigateTo(MENU_SETTINGS_UART);
-            else if (cmd == '2') navigateTo(MENU_SETTINGS_BLUETOOTH);
-            else if (cmd == '3') navigateTo(MENU_SETTINGS_DISPLAY);
-            else if (cmd == '4') navigateTo(MENU_SETTINGS_LOGGING);
-            else if (cmd == '5') navigateTo(MENU_SETTINGS_SYSTEM);
+            if (cmd == '1') {
+                navigateTo(MENU_SETTINGS_UART);
+                needRedraw = true;
+            }
+            else if (cmd == '2') {
+                navigateTo(MENU_SETTINGS_BLUETOOTH);
+                needRedraw = true;
+            }
+            else if (cmd == '3') {
+                navigateTo(MENU_SETTINGS_DISPLAY);
+                needRedraw = true;
+            }
+            else if (cmd == '4') {
+                navigateTo(MENU_SETTINGS_LOGGING);
+                needRedraw = true;
+            }
+            else if (cmd == '5') {
+                navigateTo(MENU_SETTINGS_SYSTEM);
+                needRedraw = true;
+            }
             else if (cmd == '0') {
                 ConfigManager::getInstance().reset();
                 printLine(ANSI_GREEN "\n✓ Settings reset to factory defaults!\n" ANSI_RESET);
                 vTaskDelay(pdMS_TO_TICKS(2000));
+                needRedraw = true;
             }
-            else if (cmd == 'M') navigateBack();
+            else if (cmd == 'M') {
+                navigateBack();
+                needRedraw = true;
+            }
             break;
             
         case MENU_SETTINGS_BLUETOOTH:
-            if (cmd == 'E') handleBluetoothToggle();
+            if (cmd == 'E') {
+                handleBluetoothToggle();
+                needRedraw = true;
+            }
             else if (cmd == 'N') handleBluetoothNameEdit();
-            else if (cmd == 'A') handleBluetoothAutoAdvertiseToggle();
-            else if (cmd == 'P') handleBluetoothPairingToggle();
+            else if (cmd == 'A') {
+                handleBluetoothAutoAdvertiseToggle();
+                needRedraw = true;
+            }
+            else if (cmd == 'P') {
+                handleBluetoothPairingToggle();
+                needRedraw = true;
+            }
             else if (cmd == 'C') handleBluetoothPinEdit();
             else if (cmd == 'I') handleBluetoothTxPowerEdit();
-            else if (cmd == 'M') navigateBack();
+            else if (cmd == 'M') {
+                navigateBack();
+                needRedraw = true;
+            }
             break;
             
         case MENU_SETTINGS_UART:
             if (cmd == 'B') handleUARTBaudEdit();
-            else if (cmd == 'A') handleUARTAutoDetectToggle();
+            else if (cmd == 'A') {
+                handleUARTAutoDetectToggle();
+                needRedraw = true;
+            }
             else if (cmd == 'P') handleUARTParityEdit();
             else if (cmd == 'S') handleUARTStopBitsEdit();
             else if (cmd == 'F') handleUARTFlowControlEdit();
-            else if (cmd == 'M') navigateBack();
+            else if (cmd == 'M') {
+                navigateBack();
+                needRedraw = true;
+            }
             break;
             
         case MENU_SETTINGS_DISPLAY:
         case MENU_SETTINGS_LOGGING:
         case MENU_SETTINGS_SYSTEM:
-            if (cmd == 'M') navigateBack();
+            if (cmd == 'M') {
+                navigateBack();
+                needRedraw = true;
+            }
             break;
             
         case MENU_STATS:
         case MENU_HARDWARE:
         case MENU_HELP:
-            if (cmd == 'M') navigateBack();
+            if (cmd == 'M') {
+                navigateBack();
+                needRedraw = true;
+            }
             break;
+    }
+    
+    // Redraw the menu if navigation occurred
+    if (needRedraw) {
+        show();
     }
 }
 

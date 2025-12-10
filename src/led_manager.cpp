@@ -1,6 +1,7 @@
 #include "led_manager.h"
 #include "esp_log.h"
 #include "esp_timer.h"
+#include <cmath>
 
 static const char *TAG = "LED";
 
@@ -8,7 +9,7 @@ static uint32_t millis() {
     return (uint32_t)(esp_timer_get_time() / 1000ULL);
 }
 
-LedManager::LedManager() : led_strip(NULL), currentState(STATE_BOOTING), lastUpdate(0), blinkState(false) {
+LedManager::LedManager() : led_strip(NULL), currentState(STATE_BOOTING), lastUpdate(0), blinkState(false), breathPhase(0.0f) {
 }
 
 bool LedManager::begin() {
@@ -49,68 +50,96 @@ void LedManager::setState(SystemState state) {
     update();
 }
 
+float LedManager::getBreatheIntensity() {
+    // Smooth breathing using sine wave
+    // Range: 0.15 to 1.0 (never fully off)
+    float intensity = (sinf(breathPhase) + 1.0f) * 0.425f + 0.15f;
+    breathPhase += 0.05f; // Adjust speed of breathing
+    if (breathPhase > 6.28318f) breathPhase = 0.0f; // Reset at 2*PI
+    return intensity;
+}
+
 void LedManager::update() {
     if (!led_strip) return;
     
     uint32_t now = millis();
     
     switch (currentState) {
-        case STATE_BOOTING:
-            setColor(20, 20, 20); // White dim
+        case STATE_BOOTING: {
+            // Breathing white effect
+            float intensity = getBreatheIntensity();
+            uint8_t val = (uint8_t)(30.0f * intensity);
+            setColor(val, val, val);
             break;
+        }
             
-        case STATE_WAITING:
-            // Blink Blue
-            if (now - lastUpdate > 500) {
-                blinkState = !blinkState;
-                lastUpdate = now;
-                if (blinkState) setColor(0, 0, 20);
-                else setColor(0, 0, 0);
-            }
+        case STATE_WAITING: {
+            // Breathing Blue
+            float intensity = getBreatheIntensity();
+            uint8_t val = (uint8_t)(25.0f * intensity);
+            setColor(0, 0, val);
             break;
+        }
             
         case STATE_ANALYZING:
             // Fast Blink Yellow
             if (now - lastUpdate > 100) {
                 blinkState = !blinkState;
                 lastUpdate = now;
-                if (blinkState) setColor(20, 20, 0);
+                if (blinkState) setColor(25, 25, 0);
                 else setColor(0, 0, 0);
             }
             break;
             
         case STATE_FOUND_SPEED:
-            setColor(0, 20, 0); // Green
+            // Solid Green
+            setColor(0, 25, 0);
             break;
             
-        case STATE_RUNNING:
-            setColor(0, 20, 20); // Cyan
+        case STATE_RUNNING: {
+            // Breathing Cyan (data flowing)
+            float intensity = getBreatheIntensity();
+            uint8_t val = (uint8_t)(25.0f * intensity);
+            setColor(0, val, val);
             break;
+        }
             
-        case STATE_BRIDGE_MODE:
-            setColor(20, 0, 20); // Magenta
+        case STATE_BRIDGE_MODE: {
+            // Breathing Magenta
+            float intensity = getBreatheIntensity();
+            uint8_t val = (uint8_t)(25.0f * intensity);
+            setColor(val, 0, val);
             break;
+        }
             
-        case STATE_MENU:
-            setColor(10, 0, 20); // Purple dim
+        case STATE_MENU: {
+            // Slow breathing Purple
+            if (now - lastUpdate > 50) {
+                lastUpdate = now;
+                float intensity = getBreatheIntensity();
+                uint8_t r = (uint8_t)(15.0f * intensity);
+                uint8_t b = (uint8_t)(30.0f * intensity);
+                setColor(r, 0, b);
+            }
             break;
+        }
             
         case STATE_RESTART_NEEDED:
-            // Blink Red
+            // Urgent blink Red
             if (now - lastUpdate > 250) {
                 blinkState = !blinkState;
                 lastUpdate = now;
-                if (blinkState) setColor(20, 0, 0);
+                if (blinkState) setColor(30, 0, 0);
                 else setColor(0, 0, 0);
             }
             break;
             
         case STATE_TESTING:
-             // Blink Orange
+            // Blink Orange
             if (now - lastUpdate > 200) {
                 blinkState = !blinkState;
                 lastUpdate = now;
-                if (blinkState) setColor(20, 10, 0);
+                if (blinkState) setColor(25, 12, 0);
                 else setColor(0, 0, 0);
             }
             break;

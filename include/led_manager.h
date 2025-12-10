@@ -21,8 +21,10 @@ private:
     SystemState currentState;
     uint32_t lastUpdate;
     bool blinkState;
+    float breathPhase;
     
     void setColor(uint8_t r, uint8_t g, uint8_t b);
+    float getBreatheIntensity();
 };
 
 #endif
