@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <string.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_log.h"
@@ -19,6 +21,7 @@
 #include "hardware_detector.h"
 #include "bridge_mode.h"
 #include "menu_system.h"
+#include "led_manager.h"
 
 static const char *TAG = "MAIN";
 
@@ -32,6 +35,7 @@ CommTester commTester;
 BluetoothManager bluetooth;
 BridgeMode bridge;
 MenuSystem menu;
+LedManager ledManager;
 
 // System state
 SystemState currentState = STATE_BOOTING;
@@ -71,6 +75,12 @@ void setup_hardware() {
                  (unsigned long)config.uart.baudRate,
                  config.uart.autoDetect ? "ON" : "OFF");
     }
+    
+    // Initialize LED Manager
+    if (!ledManager.begin()) {
+        ESP_LOGW(TAG, "Failed to initialize LED Manager");
+    }
+    ledManager.setState(STATE_BOOTING);
     
     // Initialize display based on configuration
     const DeviceConfig& config = configMgr.getConfig();
@@ -121,6 +131,9 @@ void setup_hardware() {
     // Initialize baud detector
     baudDetector.begin();
     
+    // Configure stdin for non-blocking I/O
+    fcntl(fileno(stdin), F_SETFL, O_NONBLOCK);
+    
     vTaskDelay(pdMS_TO_TICKS(1000));
     
     // Configure menu system with hardware info
@@ -146,10 +159,20 @@ void setup_hardware() {
 void main_loop() {
     uint32_t currentTime = millis();
     
+    // SAFETY: If UART_NUM_1 driver exists but we're in MENU state, delete it
+    // This prevents stray uart_read_bytes calls from spamming errors
+    if (currentState == STATE_MENU && uart_is_driver_installed(UART_NUM_1)) {
+        ESP_LOGW(TAG, "UART_NUM_1 driver still installed in MENU state, removing");
+        uart_driver_delete(UART_NUM_1);
+    }
+    
     // Update display periodically
     if (currentTime - stateChangeTime > 100) {
         display.update();
     }
+    
+    // Update LED state
+    ledManager.update();
     
     // State machine
     switch(currentState) {
@@ -197,6 +220,14 @@ void main_loop() {
 }
 
 void handleWaitingState() {
+    // Check for user input to return to menu
+    int c = fgetc(stdin);
+    if (c != EOF) {
+        // Any key returns to menu
+        changeState(STATE_MENU);
+        return;
+    }
+
     // Check if data is available
     if (baudDetector.isDataAvailable()) {
         logger.log("Data detected, starting analysis");
@@ -285,6 +316,18 @@ void handleTestingState() {
 }
 
 void handleRunningState() {
+    // SAFETY: Check if UART driver is installed before doing anything
+    static bool uartErrorReported = false;
+    if (!uart_is_driver_installed(UART_NUM_1)) {
+        if (!uartErrorReported) {
+            ESP_LOGE(TAG, "UART driver not installed in RUNNING state, returning to menu");
+            uartErrorReported = true;
+        }
+        changeState(STATE_MENU);
+        return;
+    }
+    uartErrorReported = false;  // Reset flag when driver is OK
+    
     // Monitor RX and TX continuously
     static uint32_t lastCheck = 0;
     
@@ -294,6 +337,13 @@ void handleRunningState() {
         // Check RX via UART
         uint8_t data[128];
         int len = uart_read_bytes(UART_NUM_1, data, sizeof(data), pdMS_TO_TICKS(10));
+        
+        // Check for UART driver error (negative values are errors)
+        if (len < 0) {
+            ESP_LOGE(TAG, "UART read error (%d), returning to menu", len);
+            changeState(STATE_MENU);
+            return;
+        }
         
         if (len > 0) {
             // Log and display the data
@@ -397,19 +447,16 @@ void handleMenuState() {
         menuShown = true;
     }
     
-    // Check for user input by polling UART directly
-    uint8_t data[1];
-    int len = uart_read_bytes(UART_NUM_0, data, 1, 0);  // Non-blocking read
+    // Check for user input via stdin (non-blocking)
+    int c = fgetc(stdin);
     
-    if (len > 0) {
-        char c = (char)data[0];
-        
+    if (c != EOF) {
         // Echo the character
-        printf("%c", c);
+        printf("%c", (char)c);
         fflush(stdout);
         
         // Handle the input
-        menu.handleInput(c);
+        menu.handleInput((char)c);
         
         // Check for commands that change state
         char cmd = menu.getLastCommand();
@@ -473,6 +520,7 @@ void changeState(SystemState newState) {
         stateChangeTime = millis();
         display.setState(newState);
         logger.logStateChange(newState);
+        ledManager.setState(newState);
     }
 }
 

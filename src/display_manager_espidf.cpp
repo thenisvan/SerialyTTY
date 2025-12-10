@@ -223,6 +223,11 @@ const char* DisplayManager::getStateName(SystemState state) {
         case STATE_MENU: return "Menu";
         case STATE_ANALYZING: return "Analyze";
         case STATE_BRIDGE_MODE: return "Bridge";
+        case STATE_WAITING: return "Waiting";
+        case STATE_FOUND_SPEED: return "Found Speed";
+        case STATE_RESTART_NEEDED: return "Restart Needed";
+        case STATE_TESTING: return "Testing";
+        case STATE_RUNNING: return "Running";
         default: return "Unknown";
     }
 }

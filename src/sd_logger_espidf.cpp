@@ -245,6 +245,11 @@ const char* SDLogger::getStateName(SystemState state) {
         case STATE_MENU: return "MENU";
         case STATE_ANALYZING: return "ANALYZING";
         case STATE_BRIDGE_MODE: return "BRIDGE_MODE";
+        case STATE_WAITING: return "WAITING";
+        case STATE_FOUND_SPEED: return "FOUND_SPEED";
+        case STATE_RESTART_NEEDED: return "RESTART_NEEDED";
+        case STATE_TESTING: return "TESTING";
+        case STATE_RUNNING: return "RUNNING";
         default: return "UNKNOWN";
     }
 }

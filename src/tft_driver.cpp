@@ -116,7 +116,7 @@ bool TFTDriver::begin() {
     devcfg.spics_io_num = TFT_CS_PIN;
     devcfg.queue_size = 7;
     devcfg.pre_cb = nullptr;
-    devcfg.flags = 0;
+    devcfg.flags = SPI_DEVICE_HALFDUPLEX;
     
     ret = spi_bus_add_device(SPI2_HOST, &devcfg, &spi);
     if (ret != ESP_OK) {
