@@ -70,6 +70,8 @@ void setup_hardware() {
         ESP_LOGI(TAG, "UART Baud: %lu, Auto-detect: %s", 
                  (unsigned long)config.uart.baudRate,
                  config.uart.autoDetect ? "ON" : "OFF");
+    }
+    
     // Initialize display based on configuration
     const DeviceConfig& config = configMgr.getConfig();
     bool displayPresent = false;
@@ -86,28 +88,11 @@ void setup_hardware() {
         }
     } else {
         ESP_LOGI(TAG, "Display disabled in configuration");
-    }/ Detect hardware modules
+    }
+    
+    // Detect hardware modules
     ESP_LOGI(TAG, "Scanning for hardware modules...");
     HardwareConfig hwConfig = hwDetector.scanAll();
-    
-    // Initialize display only if we want to try (can be disabled for testing)
-    // Set to false to skip display initialization entirely
-    bool tryDisplay = false;  // Set to true when display hardware is connected
-    bool displayPresent = false;
-    
-    if (tryDisplay) {
-        displayPresent = display.begin();
-        if (!displayPresent) {
-            ESP_LOGW(TAG, "Display not detected — continuing without display.");
-        }
-        if (displayPresent) {
-            display.setState(STATE_BOOTING);
-            display.setStatus("Initializing components...");
-            display.update();
-        }
-    } else {
-        ESP_LOGI(TAG, "Display initialization skipped (not connected)");
-    }
     
     vTaskDelay(pdMS_TO_TICKS(500));
     
@@ -125,7 +110,9 @@ void setup_hardware() {
     if (displayPresent) {
         display.setStatus("Ready");
         display.update();
-    }TaskDelay(pdMS_TO_TICKS(500));
+    }
+    
+    vTaskDelay(pdMS_TO_TICKS(500));
     
     // Log startup
     logger.log("System boot");
@@ -133,19 +120,6 @@ void setup_hardware() {
     
     // Initialize baud detector
     baudDetector.begin();
-    if (displayPresent) {
-        display.setStatus("Initializing Bluetooth...");
-        display.update();
-    }
-    
-    vTaskDelay(pdMS_TO_TICKS(500));
-    
-    // Initialize Bluetooth
-    bluetooth.begin("SmvIT USB-TTL Bridge");
-    if (displayPresent) {
-        display.setStatus("Ready");
-        display.update();
-    }
     
     vTaskDelay(pdMS_TO_TICKS(1000));
     
