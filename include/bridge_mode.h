@@ -7,6 +7,7 @@
 // Forward declarations
 class DisplayManager;
 class SDLogger;
+class BluetoothManager;
 
 // Escape sequence detection
 #define ESCAPE_SEQUENCE "~~~"
@@ -33,6 +34,7 @@ public:
     // Set optional components
     void setDisplay(DisplayManager* disp) { display = disp; }
     void setLogger(SDLogger* logger) { sdLogger = logger; }
+    void setBluetoothManager(BluetoothManager* bt) { bluetooth = bt; }
 
 private:
     bool active;
@@ -50,6 +52,7 @@ private:
     // Optional components
     DisplayManager* display;
     SDLogger* sdLogger;
+    BluetoothManager* bluetooth;
     
     bool checkEscapeSequence(char c);
     void resetEscapeDetection();

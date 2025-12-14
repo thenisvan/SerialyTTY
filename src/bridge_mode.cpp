@@ -2,6 +2,7 @@
 #include "config.h"
 #include "display_manager.h"
 #include "sd_logger.h"
+#include "bluetooth_manager.h"
 #include "esp_log.h"
 #include "esp_timer.h"
 #include "driver/uart.h"
@@ -17,7 +18,8 @@ BridgeMode::BridgeMode() :
     escapeIndex(0),
     lastEscapeChar(0),
     display(nullptr),
-    sdLogger(nullptr)
+    sdLogger(nullptr),
+    bluetooth(nullptr)
 {
     memset(escapeBuffer, 0, sizeof(escapeBuffer));
 }
@@ -130,6 +132,11 @@ void BridgeMode::forwardTargetToUsb(const uint8_t* data, size_t len) {
     if (written > 0) {
         bytesReceived += written;
         
+        // Forward to Bluetooth if connected
+        if (bluetooth && bluetooth->isConnected()) {
+            bluetooth->write(data, written);
+        }
+        
         // Log to SD if available
         if (sdLogger && sdLogger->isReady()) {
             sdLogger->logData("RX", data, written);
@@ -182,5 +189,12 @@ void BridgeMode::handleData() {
     
     if (targetLen > 0) {
         forwardTargetToUsb(targetData, targetLen);
+    } else if (targetLen < 0) {
+        // UART error - log once and ignore
+        static bool errorLogged = false;
+        if (!errorLogged) {
+            ESP_LOGW(TAG, "UART_NUM_1 read error: %d (device may not be connected)", targetLen);
+            errorLogged = true;
+        }
     }
 }
