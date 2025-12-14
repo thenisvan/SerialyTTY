@@ -91,6 +91,11 @@ public:
     // Utility
     uint16_t color565(uint8_t r, uint8_t g, uint8_t b);
     bool isInitialized() const { return initialized; }
+    
+    // LVGL integration support
+    void setWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
+    void pushColor(uint8_t r, uint8_t g, uint8_t b);
+    void pushColor(uint16_t color);
 };
 
 #endif // TFT_DRIVER_H

@@ -355,3 +355,16 @@ void TFTDriver::setRotation(uint8_t r) {
 uint16_t TFTDriver::color565(uint8_t r, uint8_t g, uint8_t b) {
     return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3);
 }
+
+void TFTDriver::setWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
+    setAddrWindow(x0, y0, x1, y1);
+}
+
+void TFTDriver::pushColor(uint8_t r, uint8_t g, uint8_t b) {
+    uint16_t color = color565(r, g, b);
+    pushColor(color);
+}
+
+void TFTDriver::pushColor(uint16_t color) {
+    writeData16(color);
+}

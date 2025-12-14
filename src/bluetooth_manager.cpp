@@ -352,7 +352,7 @@ void BluetoothManager::gattsEventHandler(esp_gatts_cb_event_t event, esp_gatt_if
     }
 
     switch (event) {
-        case ESP_GATTS_REG_EVT:
+        case ESP_GATTS_REG_EVT: {
             ESP_LOGI(TAG, "GATT server registered, app_id=%d", param->reg.app_id);
             
             // Set device name
@@ -379,8 +379,9 @@ void BluetoothManager::gattsEventHandler(esp_gatts_cb_event_t event, esp_gatt_if
             // Create GATT service
             instance->createService();
             break;
+        }
 
-        case ESP_GATTS_CREATE_EVT:
+        case ESP_GATTS_CREATE_EVT: {
             ESP_LOGI(TAG, "Service created, handle=%d", param->create.service_handle);
             instance->service_handle = param->create.service_handle;
             esp_ble_gatts_start_service(instance->service_handle);
@@ -395,6 +396,7 @@ void BluetoothManager::gattsEventHandler(esp_gatts_cb_event_t event, esp_gatt_if
                 ESP_GATT_CHAR_PROP_BIT_NOTIFY,
                 nullptr, nullptr);
             break;
+        }
 
         case ESP_GATTS_ADD_CHAR_EVT: {
             ESP_LOGI(TAG, "Characteristic added, handle=%d", param->add_char.attr_handle);
@@ -419,7 +421,7 @@ void BluetoothManager::gattsEventHandler(esp_gatts_cb_event_t event, esp_gatt_if
             break;
         }
 
-        case ESP_GATTS_CONNECT_EVT:
+        case ESP_GATTS_CONNECT_EVT: {
             ESP_LOGI(TAG, "Client connected, conn_id=%d", param->connect.conn_id);
             instance->conn_id = param->connect.conn_id;
             instance->status = BLE_CONNECTED;
@@ -437,6 +439,7 @@ void BluetoothManager::gattsEventHandler(esp_gatts_cb_event_t event, esp_gatt_if
             conn_params.timeout = 400;
             esp_ble_gap_update_conn_params(&conn_params);
             break;
+        }
 
         case ESP_GATTS_DISCONNECT_EVT:
             ESP_LOGI(TAG, "Client disconnected, reason=%d", param->disconnect.reason);
@@ -480,8 +483,30 @@ void BluetoothManager::gattsEventHandler(esp_gatts_cb_event_t event, esp_gatt_if
             ESP_LOGI(TAG, "MTU changed to %d", param->mtu.mtu);
             break;
 
+        // Handle other GATTS events (no action needed)
+        case ESP_GATTS_READ_EVT:
+        case ESP_GATTS_EXEC_WRITE_EVT:
+        case ESP_GATTS_CONF_EVT:
+        case ESP_GATTS_UNREG_EVT:
+        case ESP_GATTS_ADD_INCL_SRVC_EVT:
+        case ESP_GATTS_ADD_CHAR_DESCR_EVT:
+        case ESP_GATTS_DELETE_EVT:
+        case ESP_GATTS_START_EVT:
+        case ESP_GATTS_STOP_EVT:
+        case ESP_GATTS_OPEN_EVT:
+        case ESP_GATTS_CANCEL_OPEN_EVT:
+        case ESP_GATTS_CLOSE_EVT:
+        case ESP_GATTS_LISTEN_EVT:
+        case ESP_GATTS_CONGEST_EVT:
+        case ESP_GATTS_RESPONSE_EVT:
+        case ESP_GATTS_CREAT_ATTR_TAB_EVT:
+        case ESP_GATTS_SET_ATTR_VAL_EVT:
+        case ESP_GATTS_SEND_SERVICE_CHANGE_EVT:
+            ESP_LOGD(TAG, "GATTS event: %d (not handled)", event);
+            break;
+
         default:
-            ESP_LOGD(TAG, "GATTS event: %d", event);
+            ESP_LOGD(TAG, "GATTS event: %d (unknown)", event);
             break;
     }
 }
