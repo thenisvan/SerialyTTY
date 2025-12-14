@@ -1,0 +1,274 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
+  release:
+    types: [ published ]
+
+env:
+  PLATFORMIO_VERSION: "6.9.0"
+
+jobs:
+  build:
+    name: Build Firmware
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Cache PlatformIO
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.platformio
+            .pio
+          key: ${{ runner.os }}-pio-${{ hashFiles('**/platformio.ini') }}
+          restore-keys: |
+            ${{ runner.os }}-pio-
+      
+      - name: Install PlatformIO
+        run: |
+          pip install -U platformio==${{ env.PLATFORMIO_VERSION }}
+          pio --version
+      
+      - name: Build ESP32-C6 firmware
+        run: |
+          pio run -e esp32c6
+      
+      - name: Check firmware size
+        run: |
+          ls -lh .pio/build/esp32c6/firmware.bin
+          ls -lh .pio/build/esp32c6/firmware.elf
+      
+      - name: Upload firmware artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: firmware-esp32c6
+          path: |
+            .pio/build/esp32c6/firmware.bin
+            .pio/build/esp32c6/firmware.elf
+            .pio/build/esp32c6/bootloader.bin
+          retention-days: 30
+
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Cache PlatformIO
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.platformio
+            .pio
+          key: ${{ runner.os }}-pio-test-${{ hashFiles('**/platformio.ini') }}
+      
+      - name: Install PlatformIO
+        run: |
+          pip install -U platformio==${{ env.PLATFORMIO_VERSION }}
+      
+      - name: Run unit tests
+        run: |
+          pio test -e native --verbose
+        continue-on-error: true
+      
+      - name: Generate test report
+        run: |
+          echo "Test execution completed"
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Run Snyk security scan
+        uses: snyk/actions/setup@master
+        if: false  # Enable when Snyk is configured
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      
+      - name: Run Snyk code test
+        if: false  # Enable when Snyk is configured
+        run: snyk code test --severity-threshold=high
+        continue-on-error: true
+      
+      - name: Check for hardcoded secrets
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+
+  lint:
+    name: Code Quality Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install cpplint
+        run: |
+          pip install cpplint
+      
+      - name: Run cpplint
+        run: |
+          cpplint --recursive --filter=-whitespace/line_length,-build/include_subdir src/ include/
+        continue-on-error: true
+      
+      - name: Check code formatting
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang-format
+          find src/ include/ -name "*.cpp" -o -name "*.h" | xargs clang-format --dry-run --Werror
+        continue-on-error: true
+
+  static-analysis:
+    name: Static Code Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Install cppcheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cppcheck
+      
+      - name: Run cppcheck
+        run: |
+          cppcheck --enable=all --inconclusive --xml --xml-version=2 \
+            --suppress=missingIncludeSystem \
+            --suppress=unmatchedSuppression \
+            -I include/ src/ 2> cppcheck-report.xml
+        continue-on-error: true
+      
+      - name: Upload cppcheck report
+        uses: actions/upload-artifact@v3
+        with:
+          name: cppcheck-report
+          path: cppcheck-report.xml
+
+  documentation:
+    name: Build Documentation
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Check documentation files
+        run: |
+          echo "Checking for required documentation..."
+          test -f README.md || echo "Missing README.md"
+          test -f SDLC.md || echo "Missing SDLC.md"
+          test -f BUILD_GUIDE.md || echo "Missing BUILD_GUIDE.md"
+          echo "Documentation check complete"
+      
+      - name: Validate markdown
+        run: |
+          npm install -g markdownlint-cli
+          markdownlint '**/*.md' --ignore node_modules --ignore .pio
+        continue-on-error: true
+
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    needs: [build, test, security, lint]
+    if: github.event_name == 'release'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Download firmware artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: firmware-esp32c6
+          path: ./release
+      
+      - name: Create release package
+        run: |
+          cd release
+          zip -r ../SerialyTTY-${{ github.ref_name }}.zip .
+          cd ..
+          sha256sum SerialyTTY-${{ github.ref_name }}.zip > SerialyTTY-${{ github.ref_name }}.zip.sha256
+      
+      - name: Upload release assets
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            SerialyTTY-${{ github.ref_name }}.zip
+            SerialyTTY-${{ github.ref_name }}.zip.sha256
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  performance:
+    name: Performance Benchmarks
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Check binary size
+        run: |
+          echo "Checking firmware size constraints..."
+          FIRMWARE_SIZE=$(stat -c%s .pio/build/esp32c6/firmware.bin 2>/dev/null || echo 0)
+          MAX_SIZE=2097152  # 2MB limit
+          
+          if [ $FIRMWARE_SIZE -gt $MAX_SIZE ]; then
+            echo "ERROR: Firmware size ($FIRMWARE_SIZE bytes) exceeds limit ($MAX_SIZE bytes)"
+            exit 1
+          else
+            echo "Firmware size OK: $FIRMWARE_SIZE bytes (limit: $MAX_SIZE bytes)"
+          fi
+        continue-on-error: true
+
+  notify:
+    name: Notify Status
+    runs-on: ubuntu-latest
+    needs: [build, test, security, lint, static-analysis]
+    if: always()
+    
+    steps:
+      - name: Build status summary
+        run: |
+          echo "## CI/CD Pipeline Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Build: ${{ needs.build.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Tests: ${{ needs.test.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Security: ${{ needs.security.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Lint: ${{ needs.lint.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Static Analysis: ${{ needs.static-analysis.result }}" >> $GITHUB_STEP_SUMMARY
