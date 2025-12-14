@@ -113,6 +113,7 @@ void setup_hardware() {
     if (config.bluetooth.enabled) {
         bluetooth.begin(config.bluetooth.deviceName);
         ESP_LOGI(TAG, "Bluetooth enabled: %s", config.bluetooth.deviceName);
+        ESP_LOGI(TAG, "BLE Control: Send single-letter commands (S=Status, B=Bridge, M=Menu, D=Detect, R=Reset, I=Info, H=Help)");
     } else {
         ESP_LOGI(TAG, "Bluetooth disabled in configuration");
     }
@@ -147,6 +148,7 @@ void setup_hardware() {
     // Link display and logger to bridge mode
     bridge.setDisplay(&display);
     bridge.setLogger(&logger);
+    bridge.setBluetoothManager(&bluetooth);
     
     // Transition to menu state
     currentState = STATE_MENU;
@@ -167,6 +169,75 @@ void main_loop() {
     if (currentState == STATE_MENU && uart_is_driver_installed(UART_NUM_1)) {
         ESP_LOGW(TAG, "UART_NUM_1 driver still installed in MENU state, removing");
         uart_driver_delete(UART_NUM_1);
+    }
+    
+    // Process BLE commands if connected
+    if (bluetooth.isConnected() && bluetooth.available() > 0) {
+        int cmd_int = bluetooth.read();
+        if (cmd_int != -1) {
+            char cmd = (char)cmd_int;
+            ESP_LOGI(TAG, "BLE command received: '%c'", cmd);
+            
+            // Process command and send response (keep under 20 bytes for MTU compatibility)
+            switch(cmd) {
+                case 'S': // Status
+                    {
+                        char resp[20];
+                        snprintf(resp, sizeof(resp), "St:%d,B:%lu\n",
+                                currentState, (unsigned long)detectedBaud);
+                        size_t written = bluetooth.write(resp);
+                        ESP_LOGI(TAG, "Status response sent: %d bytes", written);
+                    }
+                    break;
+                    
+                case 'B': // Bridge Mode
+                    if (currentState == STATE_MENU) {
+                        changeState(STATE_BRIDGE_MODE);
+                        bluetooth.write("OK:Bridge\n");
+                    } else {
+                        bluetooth.write("ERR:Not menu\n");
+                    }
+                    break;
+                    
+                case 'M': // Return to Menu
+                    changeState(STATE_MENU);
+                    bluetooth.write("OK:Menu\n");
+                    break;
+                    
+                case 'D': // Detect baud rate
+                    if (currentState == STATE_MENU) {
+                        changeState(STATE_WAITING);
+                        bluetooth.write("OK:Detecting\n");
+                    } else {
+                        bluetooth.write("ERR:Not menu\n");
+                    }
+                    break;
+                    
+                case 'R': // Reset
+                    bluetooth.write("Resetting...\n");
+                    vTaskDelay(pdMS_TO_TICKS(100));
+                    esp_restart();
+                    break;
+                    
+                case 'I': // Device info
+                    {
+                        const char* mac = bluetooth.getMacAddress().c_str();
+                        char resp[20];
+                        // Send MAC in parts if needed
+                        snprintf(resp, sizeof(resp), "MAC:%s\n", mac);
+                        bluetooth.write(resp);
+                    }
+                    break;
+                    
+                case 'H': // Help
+                    bluetooth.write("S B M D R I H\n");
+                    break;
+                    
+                default:
+                    bluetooth.write("ERR:Unknown\n");
+                    break;
+            }
+        }
     }
     
     // Update display periodically

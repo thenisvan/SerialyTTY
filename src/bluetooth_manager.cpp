@@ -1,5 +1,6 @@
 #include "bluetooth_manager.h"
 #include "esp_log.h"
+#include "esp_mac.h"
 #include "nvs_flash.h"
 #include <cstring>
 #include "freertos/FreeRTOS.h"
@@ -218,10 +219,17 @@ bool BluetoothManager::isConnected() {
 }
 
 size_t BluetoothManager::write(const uint8_t* data, size_t size) {
-    if (!isConnected() || char_tx_handle == 0) {
-        ESP_LOGD(TAG, "BLE not connected or TX char not ready");
+    if (!isConnected()) {
+        ESP_LOGW(TAG, "BLE write failed: not connected");
         return 0;
     }
+    
+    if (char_tx_handle == 0) {
+        ESP_LOGW(TAG, "BLE write failed: TX char handle not set");
+        return 0;
+    }
+
+    ESP_LOGI(TAG, "Sending %d bytes via BLE (conn_id=%d, handle=%d)", size, conn_id, char_tx_handle);
 
     // Send notification to client
     esp_err_t ret = esp_ble_gatts_send_indicate(
@@ -234,7 +242,7 @@ size_t BluetoothManager::write(const uint8_t* data, size_t size) {
         return 0;
     }
 
-    ESP_LOGD(TAG, "Sent %d bytes via BLE", size);
+    ESP_LOGI(TAG, "Successfully sent %d bytes via BLE", size);
     return size;
 }
 
@@ -284,6 +292,22 @@ BluetoothStatus BluetoothManager::getStatus() {
 
 std::string BluetoothManager::getDeviceName() {
     return deviceName;
+}
+
+std::string BluetoothManager::getConnectedDeviceName() {
+    return connectedDevice;
+}
+
+std::string BluetoothManager::getMacAddress() {
+    uint8_t mac[6];
+    esp_err_t ret = esp_read_mac(mac, ESP_MAC_BT);
+    if (ret == ESP_OK) {
+        char mac_str[18];
+        snprintf(mac_str, sizeof(mac_str), "%02X:%02X:%02X:%02X:%02X:%02X",
+                mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+        return std::string(mac_str);
+    }
+    return "00:00:00:00:00:00";
 }
 
 void BluetoothManager::setOnConnected(void (*callback)()) {
