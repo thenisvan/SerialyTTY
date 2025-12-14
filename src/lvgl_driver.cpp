@@ -40,7 +40,7 @@ bool LVGLDriver::begin(TFTDriver* tftDriver) {
         ESP_LOGE(TAG, "Failed to allocate draw buffer");
         return false;
     }
-    ESP_LOGI(TAG, "Draw buffer allocated: %d bytes", DRAW_BUF_SIZE * sizeof(lv_color_t));
+    ESP_LOGI(TAG, "Draw buffer allocated: %lu bytes", (unsigned long)(DRAW_BUF_SIZE * sizeof(lv_color_t)));
     
     // Create display
     display = lv_display_create(320, 240);  // Adjust for your display size
@@ -108,7 +108,7 @@ lv_obj_t* LVGLDriver::createRealtimeChart(lv_obj_t* parent, int width, int heigh
     lv_chart_set_range(chart, LV_CHART_AXIS_PRIMARY_Y, 0, 100);
     
     // Add a data series
-    lv_chart_series_t* ser1 = lv_chart_add_series(chart, lv_palette_main(LV_PALETTE_RED), LV_CHART_AXIS_PRIMARY_Y);
+    lv_chart_add_series(chart, lv_palette_main(LV_PALETTE_RED), LV_CHART_AXIS_PRIMARY_Y);
     
     // Set update mode to shift (circular buffer)
     lv_chart_set_update_mode(chart, LV_CHART_UPDATE_MODE_SHIFT);
