@@ -2,10 +2,27 @@
 
 > An intelligent ESP32-C6 USB-to-TTL serial bridge with automatic baud rate detection, TFT display support, SD card logging, Bluetooth Low Energy remote control, and interactive terminal interface.
 
-**Status:** Production Ready with BLE Control  
+**Status:** Production Ready v1.1.0 with BLE Control  
 **License:** Dual License (MIT for code, CC-BY-4.0 for documentation)  
 **Repository:** [thenisvan/SerialyTTY](https://github.com/thenisvan/SerialyTTY)  
 **Last Updated:** December 14, 2025
+
+---
+
+## Executive Summary
+
+**SerialyTTY** is an advanced serial communication diagnostic tool designed for embedded systems engineers and hardware developers. It solves the common challenge of unknown baud rates by using interrupt-based timing analysis, provides wireless control via Bluetooth Low Energy, and offers comprehensive data logging capabilities. The system gracefully handles optional peripherals, making it suitable for both field deployment and laboratory use.
+
+### At a Glance
+
+| Feature | Capability | Technology |
+|---------|------------|------------|
+| **Baud Detection** | 9600-115200 bps, ±0.5% accuracy | GPIO interrupt timing analysis |
+| **Bridge Mode** | Bidirectional, <10ms latency | Transparent UART passthrough |
+| **Wireless Control** | 10-50m range, 7 commands | BLE 5.0 (Nordic UART Service) |
+| **Display** | 240x320 real-time stats | LVGL 9.4.0 + ILI9341 TFT |
+| **Logging** | Timestamped hex dumps | SD card FAT32 filesystem |
+| **Platform** | 160 MHz, 320 KB RAM, 8 MB Flash | ESP32-C6 RISC-V SoC |
 
 ---
 
@@ -58,14 +75,36 @@ SerialyTTY is a professional-grade USB-to-TTL serial bridge device built on ESP3
 
 ## Hardware Requirements
 
-### Essential Hardware
-- **ESP32-C6 DevKit** - Minimum: 160 MHz CPU, 320 KB RAM, 8 MB Flash
-- **USB-C Cable** - For power and serial communication
+### Bill of Materials (BOM)
 
-### Optional Peripherals
-- **ILI9341 TFT Display** - 240x320, SPI interface (recommended for enhanced usability)
-- **MicroSD Card Module** - SPI interface with FAT16/FAT32 support (recommended for logging)
-- **Target Device** - Any device with UART for bridge testing
+#### Essential Components (Required)
+
+| Component | Specifications | Quantity | Notes |
+|-----------|----------------|----------|-------|
+| **ESP32-C6 DevKit** | 160 MHz RISC-V, 320 KB RAM, 8 MB Flash | 1 | DevKitC-1 recommended |
+| **USB-C Cable** | Data-capable, USB 2.0 minimum | 1 | Not charge-only |
+| **Power Supply** | 5V, ≥500 mA | 1 | Via USB or external |
+
+#### Optional Peripherals (Enhanced Functionality)
+
+| Component | Specifications | Quantity | Purpose |
+|-----------|----------------|----------|----------|
+| **ILI9341 TFT Display** | 240×320, SPI, 3.3V | 1 | Real-time visual feedback |
+| **MicroSD Card Module** | SPI, 3.3V, ≤32 GB | 1 | Data logging and storage |
+| **MicroSD Card** | FAT32, Class 10 | 1 | Log file storage |
+| **Target Device** | TTL UART (3.3V logic) | 1 | Device under test |
+| **Jumper Wires** | Male-to-female, 20 cm | 10 | Connections |
+
+### Hardware Compatibility Matrix
+
+| Feature | Without Display | With Display | With SD Card | Full Setup |
+|---------|----------------|--------------|--------------|------------|
+| Baud Detection | ✅ | ✅ | ✅ | ✅ |
+| Bridge Mode | ✅ | ✅ | ✅ | ✅ |
+| BLE Control | ✅ | ✅ | ✅ | ✅ |
+| Visual Feedback | USB Serial | TFT + USB | USB Serial | TFT + USB |
+| Data Logging | None | None | SD Card | SD Card |
+| Field Deployment | Limited | Excellent | Good | Excellent |
 
 ---
 

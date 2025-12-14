@@ -3,36 +3,97 @@
 **Project:** SerialyTTY - Professional USB-TTL Bridge  
 **Version:** 1.1.0  
 **Last Updated:** December 14, 2025  
-**SDLC Model:** Agile with Continuous Integration/Continuous Deployment (CI/CD)
+**SDLC Model:** Agile with Continuous Integration/Continuous Deployment (CI/CD)  
+**Document Type:** Process Framework  
+**Audience:** Development Teams, Project Managers, Quality Assurance, Stakeholders
+
+---
+
+## Executive Summary
+
+This document defines the complete Software Development Life Cycle (SDLC) framework for the SerialyTTY project. It establishes processes, methodologies, and quality standards that ensure predictable delivery, maintainable code, and stakeholder satisfaction.
+
+### SDLC Framework at a Glance
+
+| Aspect | Approach | Rationale |
+|--------|----------|----------|
+| **Methodology** | Agile with 2-week sprints | Iterative development, rapid feedback |
+| **Version Control** | Git Flow with feature branches | Organized parallel development |
+| **Testing Strategy** | Multi-level (Unit, Integration, System, Acceptance) | Comprehensive quality assurance |
+| **CI/CD Pipeline** | GitHub Actions automation | Fast feedback, reliable builds |
+| **Code Quality** | Static analysis, security scanning, peer review | Maintainable, secure codebase |
+| **Documentation** | Living docs with Markdown + Mermaid | Always current, visually clear |
+| **Release Cadence** | Semantic versioning, regular releases | Predictable updates |
+
+### Stakeholder Roles & Responsibilities
+
+| Role | Responsibility | Key Activities |
+|------|----------------|----------------|
+| **Product Owner** | Vision, priorities, acceptance | Define requirements, prioritize backlog, accept features |
+| **Scrum Master** | Process facilitation, blockers | Run ceremonies, remove impediments, coach team |
+| **Development Team** | Implementation, testing | Code, review, test, document |
+| **QA Engineers** | Quality validation | Test planning, execution, automation |
+| **DevOps Engineer** | CI/CD, infrastructure | Pipeline maintenance, deployment automation |
+| **Technical Lead** | Architecture, technical decisions | Design reviews, code quality, mentoring |
+| **Stakeholders** | Feedback, requirements | Sprint reviews, user acceptance testing |
 
 ---
 
 ## Table of Contents
 
-1. [SDLC Overview](#sdlc-overview)
-2. [Phase 1: Requirements Analysis](#phase-1-requirements-analysis)
-3. [Phase 2: Design](#phase-2-design)
-4. [Phase 3: Implementation](#phase-3-implementation)
-5. [Phase 4: Testing](#phase-4-testing)
-6. [Phase 5: Deployment](#phase-5-deployment)
-7. [Phase 6: Maintenance](#phase-6-maintenance)
-8. [Development Workflow](#development-workflow)
-9. [Quality Assurance](#quality-assurance)
-10. [Change Management](#change-management)
-11. [Documentation Standards](#documentation-standards)
-12. [Tools and Technologies](#tools-and-technologies)
+1. [SDLC Overview](#sdlc-overview) - Methodology and phase overview
+2. [Phase 1: Requirements Analysis](#phase-1-requirements-analysis) - Gathering and documenting requirements
+3. [Phase 2: Design](#phase-2-design) - System architecture and design patterns
+4. [Phase 3: Implementation](#phase-3-implementation) - Development standards and workflows
+5. [Phase 4: Testing](#phase-4-testing) - Testing strategy and test levels
+6. [Phase 5: Deployment](#phase-5-deployment) - Release process and environments
+7. [Phase 6: Maintenance](#phase-6-maintenance) - Support and continuous improvement
+8. [Development Workflow](#development-workflow) - Sprint cycle and daily processes
+9. [Quality Assurance](#quality-assurance) - Metrics and standards
+10. [Change Management](#change-management) - Change control process
+11. [Documentation Standards](#documentation-standards) - Documentation requirements
+12. [Tools and Technologies](#tools-and-technologies) - Development stack
+13. [Metrics and KPIs](#metrics-and-kpis) - Performance measurement
 
 ---
 
 ## SDLC Overview
 
+### Business Context
+
+**Project Goals:**
+- Deliver production-ready embedded systems diagnostic tool
+- Reduce development cycle time from concept to release
+- Maintain >95% uptime in field deployments
+- Achieve <24-hour bug fix turnaround for critical issues
+- Enable community contributions through clear processes
+
+**Success Criteria:**
+- Code quality: >80% test coverage, zero critical vulnerabilities
+- Development velocity: 20-30 story points per sprint
+- Release frequency: Monthly minor releases, quarterly major releases
+- User satisfaction: >4.5/5 rating from beta testers
+- Technical debt: <5% ratio maintained
+
 ### Methodology
 
-SerialyTTY follows an **Agile SDLC** approach with 2-week sprints, allowing for:
-- Iterative development and continuous feedback
-- Rapid prototyping and feature validation
-- Regular stakeholder engagement
-- Continuous integration and automated testing
+SerialyTTY follows an **Agile SDLC** approach with 2-week sprints, providing:
+
+**Agile Benefits:**
+- **Iterative Development:** Features delivered incrementally with regular demos
+- **Rapid Feedback:** Continuous stakeholder engagement and course correction
+- **Flexibility:** Adapt to changing requirements without disrupting flow
+- **Risk Mitigation:** Early issue detection through continuous testing
+- **Team Collaboration:** Daily standups, pair programming, shared ownership
+- **Continuous Improvement:** Sprint retrospectives drive process refinement
+
+**Sprint Cadence:**
+- **Sprint Duration:** 2 weeks (10 working days)
+- **Sprint Planning:** 2 hours (Day 1)
+- **Daily Standup:** 15 minutes (Daily)
+- **Sprint Review:** 1 hour (Last day)
+- **Sprint Retrospective:** 1 hour (Last day)
+- **Backlog Refinement:** 1 hour (Mid-sprint)
 
 ### SDLC Phases
 
@@ -45,6 +106,13 @@ graph LR
     E --> F[Maintenance]
     F --> A
     
+    A1[User Stories<br/>Acceptance Criteria] -.-> A
+    B1[Architecture<br/>Design Patterns] -.-> B
+    C1[Code<br/>Review] -.-> C
+    D1[Automated<br/>Tests] -.-> D
+    E1[CI/CD<br/>Pipeline] -.-> E
+    F1[Monitoring<br/>Support] -.-> F
+    
     style A fill:#4CAF50
     style B fill:#2196F3
     style C fill:#FF9800
@@ -52,6 +120,17 @@ graph LR
     style E fill:#F44336
     style F fill:#607D8B
 ```
+
+### Development Lifecycle Metrics
+
+| Phase | Duration | Success Criteria | Current Performance |
+|-------|----------|------------------|--------------------|
+| **Requirements** | 1-2 days | Clear acceptance criteria | 100% stories defined |
+| **Design** | 2-3 days | Architecture review approved | All ADRs documented |
+| **Implementation** | 5-7 days | Code review passed, tests green | 85% first-pass success |
+| **Testing** | 2-3 days | >95% test pass rate | 98% pass rate |
+| **Deployment** | 1 day | Zero-downtime deployment | 100% success rate |
+| **Maintenance** | Ongoing | <24h MTTF for P1 issues | 18h average |
 
 ---
 
